@@ -1,0 +1,84 @@
+[
+  {
+    "name": "Beer League Race",
+    "expectation": {
+      "cars": [
+        {
+          "car_id": 178,
+          "car_name": "Super Formula Lights",
+          "car_class_id": 0,
+          "car_class_name": "Hosted All Cars Class"
+        }
+      ],
+      "driver_changes": false,
+      "entry_count": 0,
+      "heat_ses_info": {
+        "consolation_delta_max_field_size": 0,
+        "consolation_delta_session_laps": 0,
+        "consolation_delta_session_length_minutes": 0,
+        "consolation_first_max_field_size": 0,
+        "consolation_first_session_laps": 0,
+        "consolation_first_session_length_minutes": 0,
+        "consolation_num_position_to_invert": 0,
+        "consolation_num_to_consolation": 0,
+        "consolation_num_to_main": 0,
+        "consolation_run_always": false,
+        "consolation_scores_champ_points": false,
+        "created": "2025-04-07T19:28:32Z",
+        "cust_id": 715269,
+        "heat_caution_type": 0,
+        "heat_info_id": 189155,
+        "heat_info_name": "BL Season 11",
+        "heat_laps": 250,
+        "heat_length_minutes": 15,
+        "heat_max_field_size": 62,
+        "heat_num_from_each_to_main": 64,
+        "heat_num_position_to_invert": 0,
+        "heat_scores_champ_points": true,
+        "heat_session_minutes_estimate": 157,
+        "hidden": false,
+        "main_laps": 250,
+        "main_length_minutes": 60,
+        "main_max_field_size": 62,
+        "main_num_position_to_invert": 12,
+        "max_entrants": 62,
+        "open_practice": true,
+        "pre_main_practice_length_minutes": 5,
+        "pre_qual_num_to_main": 0,
+        "pre_qual_practice_length_minutes": 50,
+        "qual_caution_type": 0,
+        "qual_laps": 250,
+        "qual_length_minutes": 20,
+        "qual_num_to_main": 0,
+        "qual_open_delay_seconds": 0,
+        "qual_scores_champ_points": false,
+        "qual_scoring": 0,
+        "qual_style": 2,
+        "race_style": 1
+      },
+      "launch_at": { "cron": "30 20 * * 2", "margin": 15 },
+      "league_id": 8579,
+      "league_season_id": 123052,
+      "lone_qualify": false,
+      "pace_car_class_id": null,
+      "pace_car_id": null,
+      "password_protected": false,
+      "practice_length": 20,
+      "qualify_laps": 1,
+      "qualify_length": 20,
+      "race_laps": 0,
+      "race_length": 20,
+      "team_entry_count": 0,
+      "time_limit": 180,
+      "track_state": {
+        "leave_marbles": false
+      },
+      "weather": {
+        "allow_fog": true,
+        "precip_option": 8,
+        "weather_summary": {}
+      }
+    }
+  }
+]
+
