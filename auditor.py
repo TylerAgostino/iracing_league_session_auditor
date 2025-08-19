@@ -74,8 +74,7 @@ class LaunchAtMatcher:
 class iRacingAPIHandler(requests.Session):
     def __init__(self, email, password, expectations_path=expectations_file):
         self.email = email
-        hash_val = f'{password}{str(email).lower()}'
-        self.password = base64.b64encode(hashlib.sha256(hash_val.encode()).digest())
+        self.password = password
         self.expectations = self._load_expectations(expectations_path)
         super().__init__()
         self.login()
