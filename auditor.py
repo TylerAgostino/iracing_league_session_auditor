@@ -84,7 +84,7 @@ class iRacingAPIHandler(requests.Session):
         headers = {'Content-Type': 'application/json'}
         data = {
             "email": self.email,
-            "password": self.password.decode()  # Decode to string for JSON
+            "password": self.password
         }
 
         response = self.post(url, json=data, headers=headers)
