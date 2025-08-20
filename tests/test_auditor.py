@@ -1,6 +1,7 @@
 import unittest
-from auditor import iRacingAPIHandler
+from auditor import iRacingAPIHandler, LaunchAtMatcher
 import os
+import json
 
 class TestiRacingAPIHandler(unittest.TestCase):
     def setUp(self):
@@ -48,3 +49,32 @@ class TestiRacingAPIHandler(unittest.TestCase):
         except Exception as e:
             self.fail(f"Formatted results raised an exception: {e}")
 
+    def test_get_historical_sessions(self):
+        league_id = 8579
+        season_id = 0#123052
+        response = self.handler._get_paged_data(f"https://members-ng.iracing.com/data/league/season_sessions?league_id={league_id}&season_id={season_id}")
+        print(json.dumps(response, indent=2))
+
+
+class TestLaunchAtMatcher(unittest.TestCase):
+    def test_passing_cases(self):
+        cases = [
+            # (cron, tolerance in minutes, passing timestamp)
+            ("30 0 * * 4", 15, "2025-08-21T00:30:00Z"),  # Wednesday at 00:30 UTC
+        ]
+        for cron, tolerance, timestamp in cases:
+            matcher = LaunchAtMatcher(cron, tolerance)
+            valid, message = matcher(timestamp)
+            self.assertTrue(valid, message)
+
+    def test_failing_cases(self):
+        cases = [
+            # (cron, tolerance in minutes, failing timestamp)
+            ("30 0 * * 4", 10, "2025-08-21T00:45:00Z"),  # Wednesday at 00:45 UTC, outside tolerance
+            ("30 0 * * 4", 15, "2025-08-21T01:00:00Z"),  # Wednesday at 01:00 UTC, outside tolerance
+            ("30 0 * * 4", 5, "2025-08-20T12:30:00Z"),  # Tuesday at 12:30 UTC, outside tolerance
+        ]
+        for cron, tolerance, timestamp in cases:
+            matcher = LaunchAtMatcher(cron, tolerance)
+            valid, message = matcher(timestamp)
+            self.assertFalse(valid, message)
