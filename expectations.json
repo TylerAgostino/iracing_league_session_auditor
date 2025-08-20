@@ -24,11 +24,7 @@
         "consolation_num_to_main": 0,
         "consolation_run_always": false,
         "consolation_scores_champ_points": false,
-        "created": "2025-04-07T19:28:32Z",
-        "cust_id": 715269,
         "heat_caution_type": 0,
-        "heat_info_id": 189155,
-        "heat_info_name": "BL Season 11",
         "heat_laps": 250,
         "heat_length_minutes": 15,
         "heat_max_field_size": 62,
@@ -69,7 +65,10 @@
       "race_laps": 0,
       "race_length": 20,
       "team_entry_count": 0,
-      "time_limit": 180
+      "time_limit": 180,
+      "track_state": {
+        "leave_marbles": false
+      }
     }
   },
   {

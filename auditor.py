@@ -264,6 +264,11 @@ class iRacingAPIHandler(requests.Session):
                     exp['expectation']['launch_at'] = LaunchAtMatcher()
         return expectations
 
+    def _compute_expectations_revision(self, path=expectations_file):
+        """Compute a checksum of the expectations file for change detection."""
+        with open(path, 'rb') as f:
+            return hashlib.sha256(f.read()).hexdigest()
+
     def validate_sessions(self, league_id, summaries_path=state_file, force=False):
         sessions = self.get_joinable_sessions_for_league(league_id)
         if not sessions:
@@ -272,13 +277,26 @@ class iRacingAPIHandler(requests.Session):
         prev_summaries = self._load_previous_summaries(summaries_path)
         new_summaries = {}
         results = []
+
+        # Compute the current expectations revision
+        current_revision = self._compute_expectations_revision()
+        prev_revision = prev_summaries.get('revision')
+
+        # If the revision has changed, force revalidation
+        if current_revision != prev_revision:
+            force = True
+
         for session in sessions:
             session_id = str(session.get('launch_at'))
             session_hash = self._session_hash(session)
             new_summaries[session_id] = session_hash
             if session_id not in prev_summaries or prev_summaries[session_id] != session_hash or force:
                 results.append(self.validate_session(session))
+
+        # Save the new revision and summaries
+        new_summaries['revision'] = current_revision
         self._save_summaries(new_summaries, summaries_path)
+
         return results
 
     @staticmethod
