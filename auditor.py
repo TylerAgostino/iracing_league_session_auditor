@@ -18,6 +18,9 @@ class VerificationRequiredException(Exception):
     """Exception raised when verification is required for login."""
     pass
 
+class UnauthorizedException(Exception):
+    pass
+
 class LaunchAtMatcher:
     def __init__(self, cron_expr="30 20 * * 2", minute_tolerance=15):
         self.cron_expr = cron_expr
@@ -129,6 +132,8 @@ class iRacingAPIHandler(requests.Session):
                 return data.json() if data.status_code == 200 else None
             else:
                 return response.json()
+        elif response.status_code == 401:
+            raise UnauthorizedException("Session may have expired.")
         else:
             response.raise_for_status()
             return None
@@ -356,6 +361,13 @@ if __name__ == "__main__":
                 else:
                     message_content = "iRacing authentication expired. Please log in to the iRacing member site."
                     last_auth_failed = True
+            except UnauthorizedException as e:
+                try:
+                    handler.login()
+                except Exception as inner_e:
+                    print(inner_e)
+                    time.sleep(60 * 60 * 24)  # Wait a day before retrying after login failure
+                    message_content = False
             except Exception as e:
                 print(f"Error during validation: {e}")
                 message_content = False
