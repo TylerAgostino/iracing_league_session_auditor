@@ -1,8 +1,6 @@
-import base64
 import hashlib
 import requests
 import datetime
-import pytz
 import json
 import time
 import os
@@ -31,9 +29,10 @@ class LaunchAtMatcher:
             raise ValueError(f"Invalid cron expression: {cron_expr}")
         self.cron_minute, self.cron_hour, self.cron_dom, self.cron_month, self.cron_wday = fields
 
-    def _parse_field(self, field, minval, maxval):
+    @staticmethod
+    def _parse_field(field, min_val, max_val):
         if field == '*':
-            return set(range(minval, maxval+1))
+            return set(range(min_val, max_val+1))
         vals = set()
         for part in field.split(','):
             if '-' in part:
@@ -43,7 +42,8 @@ class LaunchAtMatcher:
                 vals.add(int(part))
         return vals
 
-    def _parse_cron_weekdays(self, field):
+    @staticmethod
+    def _parse_cron_weekdays(field):
         # Cron: 0=Sunday, 1=Monday, ..., 6=Saturday
         # Python: 0=Monday, ..., 6=Sunday
         vals = set()
@@ -92,8 +92,9 @@ class LaunchAtMatcher:
                 return True, f"Launch time OK: {dt_et.strftime('%A %Y-%m-%d %H:%M %Z')} (nearest cron: {nearest.strftime('%A %Y-%m-%d %H:%M %Z')}, delta {delta:.1f} min)"
             else:
                 return False, f"Time not within {self.minute_tolerance} min of cron ({self.cron_expr}): {dt_et.strftime('%A %Y-%m-%d %H:%M %Z')} (nearest: {nearest.strftime('%A %Y-%m-%d %H:%M %Z')}, delta {delta:.1f} min)"
-        except Exception as e:
-            return False, f"Invalid date format: {value} ({e})"
+        except Exception as call_exception:
+            return False, f"Invalid date format: {value} ({call_exception})"
+
 
 class iRacingAPIHandler(requests.Session):
     def __init__(self, email, password, expectations_path=expectations_file):
@@ -105,13 +106,13 @@ class iRacingAPIHandler(requests.Session):
 
     def login(self):
         url = 'https://members-ng.iracing.com/auth'
-        headers = {'Content-Type': 'application/json'}
+        login_headers = {'Content-Type': 'application/json'}
         data = {
             "email": self.email,
             "password": self.password
         }
 
-        response = self.post(url, json=data, headers=headers)
+        response = self.post(url, json=data, headers=login_headers)
 
         if response.status_code == 200:
             # save the returned cookie
@@ -235,22 +236,26 @@ class iRacingAPIHandler(requests.Session):
 
         return result
 
-    def _session_hash(self, session):
+    @staticmethod
+    def _session_hash(session):
         """Compute a hash of the session's relevant fields for change detection."""
         return hashlib.sha256(json.dumps(session, sort_keys=True).encode()).hexdigest()
 
-    def _load_previous_summaries(self, path=state_file):
+    @staticmethod
+    def _load_previous_summaries(path=state_file):
         if os.path.exists(path):
             with open(path, 'r') as f:
                 return json.load(f)
         return {}
 
-    def _save_summaries(self, summaries, path=state_file):
+    @staticmethod
+    def _save_summaries(summaries, path=state_file):
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, 'w') as f:
             json.dump(summaries, f, indent=2)
 
-    def _load_expectations(self, path=expectations_file):
+    @staticmethod
+    def _load_expectations(path=expectations_file):
         with open(path, 'r') as f:
             expectations = json.load(f)
         # Replace any 'launch_at' with a matcher callable
@@ -263,7 +268,8 @@ class iRacingAPIHandler(requests.Session):
                     exp['expectation']['launch_at'] = LaunchAtMatcher()
         return expectations
 
-    def _compute_expectations_revision(self, path=expectations_file):
+    @staticmethod
+    def _compute_expectations_revision(path=expectations_file):
         """Compute a checksum of the expectations file for change detection."""
         with open(path, 'rb') as f:
             return hashlib.sha256(f.read()).hexdigest()
@@ -307,19 +313,17 @@ class iRacingAPIHandler(requests.Session):
             session_results = result[session_name]
 
             # Check if there are any failing validations
-            validation_failures = [sr for sr in session_results if sr.startswith(f"{FAIL_ICON}") or sr.startswith(f"{UNKNOWN_ICON}")];
+            validation_failures = [sr for sr in session_results if sr.startswith(f"{FAIL_ICON}") or sr.startswith(f"{UNKNOWN_ICON}")]
 
             # If no failures, show a success message
             if not validation_failures:
                 result_string = f">>> # {session_name}:\n{PASS_ICON} All checks passed!"
+                result_string += f"\n ### Matched {result.get('matched_expectation_name', 'None')}"
                 formatted_results.append(result_string)
                 continue
 
             # If we have failures and additional expectation results, show all of them
             result_string = f">>> # {session_name}:\n"
-
-            # Get matched expectation name
-            matched_expectation_name = result.get('matched_expectation_name')
 
             # If there are additional expectations that were checked
             if 'all_expectation_results' in result and result['all_expectation_results']:
@@ -342,18 +346,18 @@ class iRacingAPIHandler(requests.Session):
         return output
 
 if __name__ == "__main__":
-    email = os.environ.get('IRACING_API_EMAIL', "tyleragostino@gmail.com")
-    password = os.environ.get('IRACING_API_PASSWORD')
-    if not email or not password:
+    runtime_email = os.environ.get('IRACING_API_EMAIL', "tyleragostino@gmail.com")
+    runtime_password = os.environ.get('IRACING_API_PASSWORD')
+    if not runtime_email or not runtime_password:
         print("Please set IRACING_API_EMAIL and IRACING_API_PASSWORD environment variables.")
     else:
-        handler = iRacingAPIHandler(email, password)
+        handler = iRacingAPIHandler(runtime_email, runtime_password)
         last_auth_failed = False
         while True:
             try:
-                league_id = 8579
-                results = handler.validate_sessions(league_id)
-                message_content = handler.format_validation_results(results) if results else False
+                beer_league = 8579
+                league_sessions = handler.validate_sessions(beer_league)
+                message_content = handler.format_validation_results(league_sessions) if league_sessions else False
             except VerificationRequiredException as e:
                 print(f"Verification required: {e}")
                 if last_auth_failed:
@@ -367,6 +371,7 @@ if __name__ == "__main__":
                 except Exception as inner_e:
                     print(inner_e)
                     time.sleep(60 * 60 * 24)  # Wait a day before retrying after login failure
+                finally:
                     message_content = False
             except Exception as e:
                 print(f"Error during validation: {e}")
@@ -383,11 +388,11 @@ if __name__ == "__main__":
                         "avatar_url": "https://cdn.discordapp.com/icons/981935710514839572/6d1658b24a272ad3e0efa97d9480fef5.png?size=320&quality=lossless"
                     }
                     webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
-                    response = requests.post(webhook_url, json=payload, headers=headers)
-                    if response.status_code == 204:
+                    wh_response = requests.post(webhook_url, json=payload, headers=headers)
+                    if wh_response.status_code == 204:
                         print("Results sent to Discord successfully.")
                     else:
-                        print(f"Failed to send results to Discord: {response.status_code} - {response.text}")
+                        print(f"Failed to send results to Discord: {wh_response.status_code} - {wh_response.text}")
             except Exception as e:
                 print(f"Error sending to Discord: {e}")
             time.sleep(60 * 60)
