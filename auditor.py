@@ -342,10 +342,10 @@ if __name__ == "__main__":
     if not email or not password:
         print("Please set IRACING_API_EMAIL and IRACING_API_PASSWORD environment variables.")
     else:
+        handler = iRacingAPIHandler(email, password)
         last_auth_failed = False
         while True:
             try:
-                handler = iRacingAPIHandler(email, password)
                 league_id = 8579
                 results = handler.validate_sessions(league_id)
                 message_content = handler.format_validation_results(results) if results else False
@@ -371,4 +371,4 @@ if __name__ == "__main__":
                     print("Results sent to Discord successfully.")
                 else:
                     print(f"Failed to send results to Discord: {response.status_code} - {response.text}")
-            time.sleep(60 * 60 * 24)
+            time.sleep(60 * 60)
