@@ -266,7 +266,7 @@ class iRacingAPIHandler(requests.Session):
     def validate_sessions(self, league_id, summaries_path=state_file, force=False):
         sessions = self.get_joinable_sessions_for_league(league_id)
         if not sessions:
-            return ["No joinable sessions found for the league."]
+            return False
 
         prev_summaries = self._load_previous_summaries(summaries_path)
         new_summaries = {}
@@ -348,8 +348,9 @@ if __name__ == "__main__":
             try:
                 league_id = 8579
                 results = handler.validate_sessions(league_id)
-                message_content = handler.format_validation_results(results) if results else False
-                last_auth_failed = False
+                if results:
+                    message_content = handler.format_validation_results(results) if results else False
+                    last_auth_failed = False
             except VerificationRequiredException as e:
                 print(f"Verification required: {e}")
                 if last_auth_failed:
@@ -357,18 +358,25 @@ if __name__ == "__main__":
                 else:
                     message_content = "iRacing authentication expired. Please log in to the iRacing member site."
                     last_auth_failed = True
-            if message_content:
-                headers = {'Content-Type': 'application/json'}
-                print(message_content)
-                payload = {
-                    "content": message_content[:2000],  # Discord message limit is 2000 characters
-                    "username": "Session Auditor",
-                    "avatar_url": "https://cdn.discordapp.com/icons/981935710514839572/6d1658b24a272ad3e0efa97d9480fef5.png?size=320&quality=lossless"
-                }
-                webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
-                response = requests.post(webhook_url, json=payload, headers=headers)
-                if response.status_code == 204:
-                    print("Results sent to Discord successfully.")
-                else:
-                    print(f"Failed to send results to Discord: {response.status_code} - {response.text}")
+            except Exception as e:
+                print(f"Error during validation: {e}")
+                message_content = f"Error during validation: {e}"
+
+            try:
+                 if message_content:
+                    headers = {'Content-Type': 'application/json'}
+                    print(message_content)
+                    payload = {
+                        "content": message_content[:2000],  # Discord message limit is 2000 characters
+                        "username": "Session Auditor",
+                        "avatar_url": "https://cdn.discordapp.com/icons/981935710514839572/6d1658b24a272ad3e0efa97d9480fef5.png?size=320&quality=lossless"
+                    }
+                    webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
+                    response = requests.post(webhook_url, json=payload, headers=headers)
+                    if response.status_code == 204:
+                        print("Results sent to Discord successfully.")
+                    else:
+                        print(f"Failed to send results to Discord: {response.status_code} - {response.text}")
+            except Exception as e:
+                print(f"Error sending to Discord: {e}")
             time.sleep(60 * 60)
