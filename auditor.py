@@ -232,13 +232,7 @@ class iRacingAPIHandler(requests.Session):
 
     def _session_hash(self, session):
         """Compute a hash of the session's relevant fields for change detection."""
-        relevant = {
-            'session_id': session.get('session_id'),
-            'session_name': session.get('session_name'),
-            'session_desc': session.get('session_desc'),
-            # Add more fields if needed for change detection
-        }
-        return hashlib.sha256(json.dumps(relevant, sort_keys=True).encode()).hexdigest()
+        return hashlib.sha256(json.dumps(session, sort_keys=True).encode()).hexdigest()
 
     def _load_previous_summaries(self, path=state_file):
         if os.path.exists(path):
