@@ -348,9 +348,7 @@ if __name__ == "__main__":
             try:
                 league_id = 8579
                 results = handler.validate_sessions(league_id)
-                if results:
-                    message_content = handler.format_validation_results(results) if results else False
-                    last_auth_failed = False
+                message_content = handler.format_validation_results(results) if results else False
             except VerificationRequiredException as e:
                 print(f"Verification required: {e}")
                 if last_auth_failed:
@@ -360,8 +358,9 @@ if __name__ == "__main__":
                     last_auth_failed = True
             except Exception as e:
                 print(f"Error during validation: {e}")
-                message_content = f"Error during validation: {e}"
-
+                message_content = False
+            else:
+                last_auth_failed = False
             try:
                  if message_content:
                     headers = {'Content-Type': 'application/json'}
