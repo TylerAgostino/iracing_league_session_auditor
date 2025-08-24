@@ -9,7 +9,7 @@ PASS_ICON = "✅"
 FAIL_ICON = "❌"
 UNKNOWN_ICON = "🟡"
 
-state_file = os.environ.get('STATE_PATH', 'state.json')
+state_file = os.environ.get('STATE_PATH', 'state/state.json')
 expectations_file = 'expectations.json'
 
 class VerificationRequiredException(Exception):
@@ -366,6 +366,7 @@ if __name__ == "__main__":
                     message_content = "iRacing authentication expired. Please log in to the iRacing member site."
                     last_auth_failed = True
             except UnauthorizedException as e:
+                print(f"Unauthorized, re-authenticating: {e}")
                 try:
                     handler.login()
                 except Exception as inner_e:
@@ -395,4 +396,5 @@ if __name__ == "__main__":
                         print(f"Failed to send results to Discord: {wh_response.status_code} - {wh_response.text}")
             except Exception as e:
                 print(f"Error sending to Discord: {e}")
+            print(f"sleep until {(datetime.datetime.now() + datetime.timedelta(seconds=60 * 60)).strftime('%Y-%m-%d %H:%M:%S')}")
             time.sleep(60 * 60)
