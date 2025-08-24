@@ -6,7 +6,7 @@ services:
         environment:
             - IRACING_API_PASSWORD=${IRACING_API_PASSWORD}
             - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
-            - STATE_PATH=/state
+            - STATE_PATH=/state/state.json
         volumes:
             - auditor:/state
 
