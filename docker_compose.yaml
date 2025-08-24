@@ -1,13 +1,14 @@
 version: "3.9"
 services:
-  auditor:
-    image: tyleragostino/iracing_auditor:latest
-    restart: always
-    environment:
-      - IRACING_API_PASSWORD=${IRACING_API_PASSWORD}
-      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
-    volumes:
-      - auditor:/app/state
+    auditor:
+        image: tyleragostino/iracing_auditor:latest
+        restart: always
+        environment:
+            - IRACING_API_PASSWORD=${IRACING_API_PASSWORD}
+            - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+            - STATE_PATH=/state
+        volumes:
+            - auditor:/state
 
 volumes:
-  auditor:
+    auditor:

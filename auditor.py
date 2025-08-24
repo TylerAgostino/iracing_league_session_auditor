@@ -9,7 +9,7 @@ PASS_ICON = "✅"
 FAIL_ICON = "❌"
 UNKNOWN_ICON = "🟡"
 
-state_file = 'state/state.json'
+state_file = os.environ.get('STATE_PATH', 'state.json')
 expectations_file = 'expectations.json'
 
 class VerificationRequiredException(Exception):
@@ -89,9 +89,9 @@ class LaunchAtMatcher:
             dt_et = dt
             nearest, delta = self._nearest_cron_time(dt_et)
             if delta is not None and delta <= self.minute_tolerance:
-                return True, f"Launch time OK: {dt_et.strftime('%A %Y-%m-%d %H:%M %Z')} (nearest cron: {nearest.strftime('%A %Y-%m-%d %H:%M %Z')}, delta {delta:.1f} min)"
+                return True, f"Launch time OK: {dt_et.strftime('%A %Y-%m-%d %H:%M %Z')} (nearest cron: {nearest.strftime('%A %Y-%m-%d %H:%M %Z') if nearest else nearest}, delta {delta:.1f} min)"
             else:
-                return False, f"Time not within {self.minute_tolerance} min of cron ({self.cron_expr}): {dt_et.strftime('%A %Y-%m-%d %H:%M %Z')} (nearest: {nearest.strftime('%A %Y-%m-%d %H:%M %Z')}, delta {delta:.1f} min)"
+                return False, f"Time not within {self.minute_tolerance} min of cron ({self.cron_expr}): {dt_et.strftime('%A %Y-%m-%d %H:%M %Z')} (nearest: {nearest.strftime('%A %Y-%m-%d %H:%M %Z') if nearest else nearest}, delta {delta:.1f} min)"
         except Exception as call_exception:
             return False, f"Invalid date format: {value} ({call_exception})"
 
@@ -130,14 +130,14 @@ class iRacingAPIHandler(requests.Session):
         if response.status_code == 200:
             if 'link' in response.json():
                 data = self.get(response.json()['link'])
-                return data.json() if data.status_code == 200 else None
+                return data.json() if data.status_code == 200 else {}
             else:
                 return response.json()
         elif response.status_code == 401:
             raise UnauthorizedException("Session may have expired.")
         else:
             response.raise_for_status()
-            return None
+            return {}
 
     def get_joinable_sessions_for_league(self, league_id):
         url = f'https://members-ng.iracing.com/data/league/cust_league_sessions'
@@ -169,7 +169,7 @@ class iRacingAPIHandler(requests.Session):
                 else:
                     results.append(f"{UNKNOWN_ICON} {path}[{i}] NOT FOUND in actual list")
         elif callable(expected):
-            ok, msg = expected(actual)
+            ok, msg = expected(actual) #pyright: ignore
             if ok:
                 results.append(f"{PASS_ICON} {path} {msg}")
             else:
@@ -231,7 +231,7 @@ class iRacingAPIHandler(requests.Session):
         }
 
         # Only include all_expectation_results if there are mismatches and multiple named expectations
-        if best_mismatches > 0 and len(all_expectation_results) > 0:
+        if best_mismatches and best_mismatches > 0 and len(all_expectation_results) > 0:
             result['all_expectation_results'] = all_expectation_results
 
         return result
@@ -387,7 +387,7 @@ if __name__ == "__main__":
                         "username": "Session Auditor",
                         "avatar_url": "https://cdn.discordapp.com/icons/981935710514839572/6d1658b24a272ad3e0efa97d9480fef5.png?size=320&quality=lossless"
                     }
-                    webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
+                    webhook_url = os.environ.get('DISCORD_WEBHOOK_URL', '')
                     wh_response = requests.post(webhook_url, json=payload, headers=headers)
                     if wh_response.status_code == 204:
                         print("Results sent to Discord successfully.")
