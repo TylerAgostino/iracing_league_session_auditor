@@ -1,6 +1,6 @@
 import hashlib
-from idlelib.rpc import response_queue
 
+import copy
 import requests
 import datetime
 import json
@@ -121,6 +121,7 @@ class iRacingAPIHandler(requests.Session):
         self.email = email
         self.password = password
         self.expectations = self._load_expectations(expectations_path)
+        self.logged_in = False
         super().__init__()
         self.login()
 
@@ -136,6 +137,7 @@ class iRacingAPIHandler(requests.Session):
             # # save the returned cookie
             # if response.cookies:
             #     self.cookies.update(response.cookies)
+            self.logged_in = True
             return response_data
         elif (
             "verificationRequired" in response.json()
@@ -148,6 +150,10 @@ class iRacingAPIHandler(requests.Session):
             raise RuntimeError("Error from iRacing: ", response_data)
 
     def _get_paged_data(self, url):
+        if not self.logged_in:
+            self.login()
+            if not self.logged_in:
+                raise UnauthorizedException("Not logged in to iRacing API")
         response = self.get(url)
         if response.status_code == 200:
             if "link" in response.json():
@@ -156,7 +162,8 @@ class iRacingAPIHandler(requests.Session):
             else:
                 return response.json()
         elif response.status_code == 401:
-            raise UnauthorizedException("Session may have expired.")
+            self.logged_in = False
+            return self._get_paged_data(url)
         else:
             response.raise_for_status()
             return {}
@@ -273,7 +280,9 @@ class iRacingAPIHandler(requests.Session):
     @staticmethod
     def _session_hash(session):
         """Compute a hash of the session's relevant fields for change detection."""
-        return hashlib.sha256(json.dumps(session, sort_keys=True).encode()).hexdigest()
+        s = copy.deepcopy(session)
+        del s["weather"]["weather_url"]  # Remove weather_url as it changes frequently
+        return hashlib.sha256(json.dumps(s, sort_keys=True).encode()).hexdigest()
 
     @staticmethod
     def _load_previous_summaries(path=state_file):
@@ -335,11 +344,16 @@ class iRacingAPIHandler(requests.Session):
             session_id = str(session.get("launch_at"))
             session_hash = self._session_hash(session)
             new_summaries[session_id] = session_hash
+            with open(f"{time.time()}.json", "w") as f:
+                json.dump(session, f, indent=2)
             if (
                 session_id not in prev_summaries
                 or prev_summaries[session_id] != session_hash
                 or force
             ):
+                print(
+                    f"{session_hash} != {prev_summaries.get(session_id)} (FORCE={force})"
+                )
                 results.append(self.validate_session(session))
 
         # Save the new revision and summaries
