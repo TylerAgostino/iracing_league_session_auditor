@@ -172,7 +172,15 @@ class iRacingAPIHandler(requests.Session):
         url = "https://members-ng.iracing.com/data/league/cust_league_sessions"
         r = self._get_paged_data(url)
         if "sessions" in r:
-            return [s for s in r["sessions"] if s.get("league_id") == league_id]
+            return [
+                s for s in r["sessions"]
+                if (
+                        s.get("league_id") == league_id
+                        and (
+                                datetime.datetime.strptime(s.get("launch_at"), "%Y-%m-%dT%H:%M:%SZ") >
+                                datetime.datetime.now(datetime.UTC).replace(tzinfo=None)
+                        )
+                )]
         else:
             return []
 
