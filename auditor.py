@@ -386,15 +386,15 @@ class iRacingAPIHandler(requests.Session):
 
             # If no failures, show a success message
             if not validation_failures:
-                result_string = f">>> # {session_name}:\n{PASS_ICON} All checks passed!"
+                result_string = f"# {session_name}:\n{PASS_ICON} All checks passed!"
                 result_string += (
-                    f"\n ### Matched {result.get('matched_expectation_name', 'None')}"
+                    f"\n### Matched {result.get('matched_expectation_name', 'None')}"
                 )
                 formatted_results.append(result_string)
                 continue
 
             # If we have failures and additional expectation results, show all of them
-            result_string = f">>> # {session_name}:\n"
+            result_string = f"# {session_name}:\n"
 
             # If there are additional expectations that were checked
             if (
@@ -422,7 +422,7 @@ class iRacingAPIHandler(requests.Session):
             formatted_results.append(result_string)
 
         output = "\n\n".join(formatted_results)
-        return output
+        return ">>> " + output
 
 
 if __name__ == "__main__":
