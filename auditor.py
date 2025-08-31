@@ -353,8 +353,6 @@ class iRacingAPIHandler(requests.Session):
             session_id = str(session.get("launch_at"))
             session_hash = self._session_hash(session)
             new_summaries[session_id] = session_hash
-            with open(f"{time.time()}.json", "w") as f:
-                json.dump(session, f, indent=2)
             if (
                 session_id not in prev_summaries
                 or prev_summaries[session_id] != session_hash
