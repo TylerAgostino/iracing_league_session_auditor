@@ -290,7 +290,10 @@ class iRacingAPIHandler(requests.Session):
         """Compute a hash of the session's relevant fields for change detection."""
         s = copy.deepcopy(session)
         del s["weather"]["weather_url"]  # Remove weather_url as it changes frequently
-        del s["elig"]["session_full"]
+        del s["elig"]
+        del s["can_spot"]
+        del s["can_watch"]
+        del s["can_broacast"]
         return hashlib.sha256(json.dumps(s, sort_keys=True).encode()).hexdigest()
 
     @staticmethod
