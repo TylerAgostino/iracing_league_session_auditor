@@ -289,11 +289,15 @@ class iRacingAPIHandler(requests.Session):
     def _session_hash(session):
         """Compute a hash of the session's relevant fields for change detection."""
         s = copy.deepcopy(session)
-        del s["weather"]["weather_url"]  # Remove weather_url as it changes frequently
-        del s["elig"]
-        del s["can_spot"]
-        del s["can_watch"]
-        del s["can_broacast"]
+        try:
+            del s["weather"]["weather_url"]  # Remove weather_url as it changes frequently
+        except KeyError:
+            pass
+        for key in ["elig", "can_spot", "can_watch", "can_broacast"]:
+            try:
+                del s[key]  # Remove fields that change frequently
+            except KeyError:
+                pass
         return hashlib.sha256(json.dumps(s, sort_keys=True).encode()).hexdigest()
 
     @staticmethod
