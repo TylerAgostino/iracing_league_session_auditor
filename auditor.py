@@ -319,6 +319,9 @@ class iRacingAPIHandler(requests.Session):
                 del s[key]  # Remove fields that change frequently
             except KeyError:
                 pass
+        # Sort the Admins array for consistency
+        if "admins" in s and isinstance(s["admins"], list):
+            s["admins"] = sorted(s["admins"], key=lambda x: x.get("cust_id", 0))
         return hashlib.sha256(json.dumps(s, sort_keys=True).encode()).hexdigest()
 
     @staticmethod
