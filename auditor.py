@@ -293,7 +293,28 @@ class iRacingAPIHandler(requests.Session):
             del s["weather"]["weather_url"]  # Remove weather_url as it changes frequently
         except KeyError:
             pass
-        for key in ["elig", "can_spot", "can_watch", "can_broacast"]:
+        try:
+            del s["weather"]["forecast_options"]["weather_seed"]
+        except KeyError:
+            pass
+        for key in [
+            "elig",
+            "can_spot",
+            "can_watch",
+            "can_broadcast",
+            "can_join",
+            "num_drivers",
+            "num_spotters",
+            "num_spectators",
+            "num_broadcasters",
+            "available_reserved_broadcaster_slots",
+            "num_spectator_slots",
+            "available_spectator_slots",
+            "entry_count",
+            "team_entry_count",
+            "populated",
+            "broadcaster"
+        ]:
             try:
                 del s[key]  # Remove fields that change frequently
             except KeyError:
