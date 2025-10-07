@@ -17,8 +17,6 @@ steps:
     when:
       branch:
         - main
-      changeset:
-        includes: [ "**/**.py", "**/**.txt", "**/Dockerfile" ]
   - name: deploy
     image: plugins/webhook
     settings:
