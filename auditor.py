@@ -6,12 +6,14 @@ import datetime
 import json
 import time
 import os
+import argparse
+
 
 PASS_ICON = "✅"
 FAIL_ICON = "❌"
 UNKNOWN_ICON = "🟡"
 
-state_file = os.environ.get("STATE_PATH", "state/state.json")
+# Default values (will be overridden by command line arguments)
 expectations_file = "expectations.json"
 
 
@@ -117,9 +119,16 @@ class LaunchAtMatcher:
 
 
 class iRacingAPIHandler(requests.Session):
-    def __init__(self, email, password, expectations_path=expectations_file):
+    def __init__(
+        self,
+        email,
+        password,
+        state_file_path="state/state.json",
+        expectations_path=expectations_file,
+    ):
         self.email = email
         self.password = password
+        self.state_file_path = state_file_path
         self.expectations = self._load_expectations(expectations_path)
         self.logged_in = False
         super().__init__()
@@ -173,14 +182,18 @@ class iRacingAPIHandler(requests.Session):
         r = self._get_paged_data(url)
         if "sessions" in r:
             return [
-                s for s in r["sessions"]
+                s
+                for s in r["sessions"]
                 if (
-                        s.get("league_id") == league_id
-                        and (
-                                datetime.datetime.strptime(s.get("launch_at"), "%Y-%m-%dT%H:%M:%SZ") >
-                                datetime.datetime.now(datetime.UTC).replace(tzinfo=None)
+                    s.get("league_id") == league_id
+                    and (
+                        datetime.datetime.strptime(
+                            s.get("launch_at"), "%Y-%m-%dT%H:%M:%SZ"
                         )
-                )]
+                        > datetime.datetime.now(datetime.UTC).replace(tzinfo=None)
+                    )
+                )
+            ]
         else:
             return []
 
@@ -290,7 +303,9 @@ class iRacingAPIHandler(requests.Session):
         """Compute a hash of the session's relevant fields for change detection."""
         s = copy.deepcopy(session)
         try:
-            del s["weather"]["weather_url"]  # Remove weather_url as it changes frequently
+            del s["weather"][
+                "weather_url"
+            ]  # Remove weather_url as it changes frequently
         except KeyError:
             pass
         try:
@@ -313,26 +328,80 @@ class iRacingAPIHandler(requests.Session):
             "entry_count",
             "team_entry_count",
             "populated",
-            "broadcaster"
+            "broadcaster",
         ]:
             try:
                 del s[key]  # Remove fields that change frequently
             except KeyError:
                 pass
-        # Sort the Admins array for consistency
-        if "admins" in s and isinstance(s["admins"], list):
-            s["admins"] = sorted(s["admins"], key=lambda x: x.get("cust_id", 0))
+
+        # Sort all arrays of objects for consistency to prevent false change detection
+        arrays_to_sort = [
+            "admins",
+            "car_types",
+            "track_types",
+            "license_group_types",
+            "event_types",
+            "session_types",
+            "allowed_teams",
+            "allowed_leagues",
+            "cars",
+        ]
+
+        for array_name in arrays_to_sort:
+            if array_name in s and isinstance(s[array_name], list):
+                if array_name == "admins":
+                    # Sort admins by customer ID
+                    s[array_name] = sorted(
+                        s[array_name], key=lambda x: x.get("cust_id", 0)
+                    )
+                elif array_name == "cars":
+                    # Sort cars by car ID
+                    s[array_name] = sorted(
+                        s[array_name], key=lambda x: x.get("car_id", 0)
+                    )
+                elif array_name in ["car_types", "track_types"]:
+                    # Sort these by their type field
+                    s[array_name] = sorted(
+                        s[array_name], key=lambda x: x.get(array_name[:-1], "")
+                    )
+                elif array_name in [
+                    "license_group_types",
+                    "event_types",
+                    "session_types",
+                ]:
+                    # Sort these by their type field
+                    s[array_name] = sorted(
+                        s[array_name], key=lambda x: x.get(array_name[:-1], 0)
+                    )
+                elif array_name == "allowed_leagues" or array_name == "allowed_teams":
+                    # These are simple arrays of IDs, sort them directly
+                    s[array_name] = sorted(s[array_name])
+
+        # Sort weather simulated_time_offsets if it exists
+        try:
+            if (
+                "weather" in s
+                and "simulated_time_offsets" in s["weather"]
+                and isinstance(s["weather"]["simulated_time_offsets"], list)
+            ):
+                s["weather"]["simulated_time_offsets"] = sorted(
+                    s["weather"]["simulated_time_offsets"]
+                )
+        except KeyError:
+            pass
+
         return hashlib.sha256(json.dumps(s, sort_keys=True).encode()).hexdigest()
 
-    @staticmethod
-    def _load_previous_summaries(path=state_file):
+    def _load_previous_summaries(self, path=None):
+        path = path or self.state_file_path
         if os.path.exists(path):
             with open(path, "r") as f:
                 return json.load(f)
         return {}
 
-    @staticmethod
-    def _save_summaries(summaries, path=state_file):
+    def _save_summaries(self, summaries, path=None):
+        path = path or self.state_file_path
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w") as f:
             json.dump(summaries, f, indent=2)
@@ -363,11 +432,12 @@ class iRacingAPIHandler(requests.Session):
         with open(path, "rb") as f:
             return hashlib.sha256(f.read()).hexdigest()
 
-    def validate_sessions(self, league_id, summaries_path=state_file, force=False):
+    def validate_sessions(self, league_id, summaries_path=None, force=False):
         sessions = self.get_joinable_sessions_for_league(league_id)
         if not sessions:
             return False
 
+        summaries_path = summaries_path or self.state_file_path
         prev_summaries = self._load_previous_summaries(summaries_path)
         new_summaries = {}
         results = []
@@ -384,6 +454,8 @@ class iRacingAPIHandler(requests.Session):
             session_id = str(session.get("launch_at"))
             session_hash = self._session_hash(session)
             new_summaries[session_id] = session_hash
+            with open(f"{time.time()}.json", "w") as f:
+                json.dump(session, f, indent=2)
             if (
                 session_id not in prev_summaries
                 or prev_summaries[session_id] != session_hash
@@ -457,19 +529,41 @@ class iRacingAPIHandler(requests.Session):
 
 
 if __name__ == "__main__":
-    runtime_email = os.environ.get("IRACING_API_EMAIL", "tyleragostino@gmail.com")
-    runtime_password = os.environ.get("IRACING_API_PASSWORD")
+    # Set up command line argument parsing
+    parser = argparse.ArgumentParser(description="iRacing League Session Auditor")
+    parser.add_argument(
+        "--email", default="tyleragostino@gmail.com", help="iRacing API email"
+    )
+    parser.add_argument("--password", required=True, help="iRacing API password")
+    parser.add_argument(
+        "--state-path",
+        default="state/state.json",
+        help="Path to state file (default: state/state.json)",
+    )
+    parser.add_argument(
+        "--league-id",
+        type=int,
+        default=8579,
+        help="iRacing league ID to audit (default: 8579)",
+    )
+    parser.add_argument(
+        "--discord-webhook", default="", help="Discord webhook URL for notifications"
+    )
+
+    args = parser.parse_args()
+
+    runtime_email = args.email
+    runtime_password = args.password
+
     if not runtime_email or not runtime_password:
-        print(
-            "Please set IRACING_API_EMAIL and IRACING_API_PASSWORD environment variables."
-        )
+        print("Email and password are required.")
+        parser.print_help()
     else:
-        handler = iRacingAPIHandler(runtime_email, runtime_password)
+        handler = iRacingAPIHandler(runtime_email, runtime_password, args.state_path)
         last_auth_failed = False
         while True:
             try:
-                beer_league = 8579
-                league_sessions = handler.validate_sessions(beer_league)
+                league_sessions = handler.validate_sessions(args.league_id)
                 message_content = (
                     handler.format_validation_results(league_sessions)
                     if league_sessions
@@ -509,7 +603,7 @@ if __name__ == "__main__":
                         "username": "Session Auditor",
                         "avatar_url": "https://cdn.discordapp.com/icons/981935710514839572/6d1658b24a272ad3e0efa97d9480fef5.png?size=320&quality=lossless",
                     }
-                    webhook_url = os.environ.get("DISCORD_WEBHOOK_URL", "")
+                    webhook_url = args.discord_webhook
                     wh_response = requests.post(
                         webhook_url, json=payload, headers=headers
                     )

@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+"""
+Entry point script for the iRacing League Session Auditor
+"""
+
+from iracing_league_session_auditor.cli import main
+
+if __name__ == "__main__":
+    main()

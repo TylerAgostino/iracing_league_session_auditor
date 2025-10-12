@@ -13,7 +13,6 @@ steps:
       registry: registry.hub.docker.com
       repo: registry.hub.docker.com/tyleragostino/iracing_auditor
       tags: latest
-      cache_from: "registry.hub.docker.com/tyleragostino/iracing_auditor:latest"
     when:
       branch:
         - main
