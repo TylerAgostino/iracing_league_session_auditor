@@ -9,7 +9,6 @@ services:
             - LEAGUE_ID=${LEAGUE_ID}
             - WEBHOOK_URL=${WEBHOOK_URL:-""}
         volumes:
-            - ./expectations.json:/app/expectations.json:ro
             - auditor_data:/data
         command: >
             --username "${IRACING_USERNAME}"
