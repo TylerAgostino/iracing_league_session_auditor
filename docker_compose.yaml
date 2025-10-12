@@ -1,14 +1,26 @@
 version: "3.9"
 services:
     auditor:
-        image: tyleragostino/iracing_auditor:latest
-        restart: always
+        build: .
+        image: iracing_league_session_auditor:latest
+        restart: unless-stopped
         environment:
-            - IRACING_API_PASSWORD=${IRACING_API_PASSWORD}
-            - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
-            - STATE_PATH=/state/state.json
+            - IRACING_USERNAME=${IRACING_USERNAME}
+            - IRACING_PASSWORD=${IRACING_PASSWORD}
+            - LEAGUE_ID=${LEAGUE_ID}
+            - WEBHOOK_URL=${WEBHOOK_URL:-""}
         volumes:
-            - auditor:/state
+            - ./expectations.json:/app/expectations.json:ro
+            - auditor_data:/data
+        command: >
+            --username "${IRACING_USERNAME}"
+            --password "${IRACING_PASSWORD}"
+            --league-id "${LEAGUE_ID}"
+            --state-path "/data/state.json"
+            --expectations-path "/app/expectations.json"
+            --webhook-url "${WEBHOOK_URL:-""}"
+            --keep-alive
 
 volumes:
-    auditor:
+    auditor_data:
+        name: iracing_league_session_auditor_data

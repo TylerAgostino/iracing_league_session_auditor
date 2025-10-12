@@ -27,6 +27,7 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
+.pytest_cache/
 
 # Project specific
 state/
@@ -38,3 +39,7 @@ state/
 venv/
 env/
 ENV/
+.venv/
+
+# environment variables
+.env

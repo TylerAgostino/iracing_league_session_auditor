@@ -3,8 +3,10 @@ Cron matching utility for comparing time values against cron expressions.
 """
 
 import datetime
+from typing import final, cast
 
 
+@final
 class CronMatcher:
     """
     Utility class to match a timestamp against a cron expression with a tolerance.
@@ -12,7 +14,7 @@ class CronMatcher:
     This is used for validating that session launch times occur at expected times.
     """
 
-    def __init__(self, cron_expr="30 20 * * 2", minute_tolerance=15):
+    def __init__(self, cron_expr: str = "30 20 * * 2", minute_tolerance: int = 15):
         """
         Initialize the CronMatcher with a cron expression and tolerance.
 
@@ -35,11 +37,11 @@ class CronMatcher:
         ) = fields
 
     @staticmethod
-    def _parse_field(field, min_val, max_val):
+    def _parse_field(field: str, min_val: int, max_val: int) -> set[int]:
         """Parse a cron field and return the set of valid values."""
         if field == "*":
             return set(range(min_val, max_val + 1))
-        vals = set()
+        vals = cast(set[int], set())
         for part in field.split(","):
             if "-" in part:
                 start, end = map(int, part.split("-"))
@@ -49,7 +51,7 @@ class CronMatcher:
         return vals
 
     @staticmethod
-    def _parse_cron_weekdays(field):
+    def _parse_cron_weekdays(field: str) -> set[int]:
         """
         Parse the weekday field of a cron expression.
 
@@ -57,7 +59,7 @@ class CronMatcher:
         """
         # Cron: 0=Sunday, 1=Monday, ..., 6=Saturday
         # Python: 0=Monday, ..., 6=Sunday
-        vals = set()
+        vals = cast(set[int], set())
         if field == "*":
             return set(range(0, 7))
         for part in field.split(","):
@@ -72,7 +74,7 @@ class CronMatcher:
                 vals.add(py_wd)
         return vals
 
-    def _nearest_cron_time(self, dt):
+    def _nearest_cron_time(self, dt: datetime.datetime):
         """Find the nearest time that matches the cron expression."""
         # Only supports minute, hour, and weekday fields for simplicity
         minutes = self._parse_field(self.cron_minute, 0, 59)
@@ -97,7 +99,11 @@ class CronMatcher:
                         break
         return best_dt, best_delta
 
-    def __call__(self, value):
+    def to_json(self) -> dict[str, str | int]:
+        """Return a serialized representation of the CronMatcher."""
+        return {"cron": self.cron_expr, "margin": self.minute_tolerance}
+
+    def __call__(self, value: str):
         """
         Check if a timestamp is within tolerance of the cron schedule.
 

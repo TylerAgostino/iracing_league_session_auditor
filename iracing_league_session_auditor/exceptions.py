@@ -23,23 +23,3 @@ class UnauthorizedException(Exception):
     """
 
     pass
-
-
-class ValidationError(Exception):
-    """
-    Exception raised when a session fails validation.
-
-    This is used to indicate that a session doesn't meet the expected criteria.
-    """
-
-    pass
-
-
-class ConfigurationError(Exception):
-    """
-    Exception raised when there's an issue with the configuration.
-
-    This could be due to missing or invalid configuration files or options.
-    """
-
-    pass

@@ -5,7 +5,7 @@ from setuptools import setup
 # that don't support pyproject.toml
 # Modern tools will use pyproject.toml instead
 
-setup(
+_ = setup(
     name="iracing_league_session_auditor",
     version="0.1.0",
     packages=[

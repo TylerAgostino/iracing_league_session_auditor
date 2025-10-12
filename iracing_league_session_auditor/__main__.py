@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Command line script for the iRacing League Session Auditor
+Module entry point for iRacing League Session Auditor
+Enables running the package as `python -m iracing_league_session_auditor`
 """
-
 import sys
 from iracing_league_session_auditor.cli import main
 
