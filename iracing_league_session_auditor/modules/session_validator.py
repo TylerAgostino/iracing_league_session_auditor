@@ -48,44 +48,18 @@ class SessionValidator:
             with open(expectations_path, "r") as f:
                 expectations_file_content: str = f.read()
         except FileNotFoundError:
-            placeholder_content = json.dumps(
-                [
-                    {
-                        "name": "NASCAR Trucks",
-                        "expectation": {
-                            "cars": [
-                                {
-                                    "car_id": 123,
-                                    "car_name": "NASCAR Truck Ford F150",
-                                    "car_class_id": 0,
-                                },
-                                {
-                                    "car_id": 111,
-                                    "car_name": "NASCAR Truck Chevrolet Silverado",
-                                    "car_class_id": 0,
-                                },
-                                {
-                                    "car_id": 155,
-                                    "car_name": "NASCAR Truck Toyota Tundra TRD Pro",
-                                    "car_class_id": 0,
-                                },
-                            ],
-                            "driver_changes": False,
-                            "launch_at": {"cron": "30 0 * * 4", "margin": 15},
-                            "league_season_id": 126035,
-                            "lone_qualify": True,
-                            "password_protected": False,
-                            "practice_length": 20,
-                            "qualify_length": 20,
-                            "race_length": 20,
-                        },
-                    }
-                ],
-                indent=2,
-            )
+            # Create expectations based on current session
+
+            # Get all sessions being validated from the session_definition
+            name = session_definition.get("launch_at", "")
+
+            # Create the expectations list with the current session
+            expectations_list = [{"name": name, "expectation": session_definition}]
+
+            expectations_json = json.dumps(expectations_list, indent=2)
             with open(expectations_path, "w") as f:
-                _ = f.write(placeholder_content)
-            expectations_file_content = placeholder_content
+                _ = f.write(expectations_json)
+            expectations_file_content = expectations_json
         self.expectations_revision: str = hashlib.sha256(
             expectations_file_content.encode()
         ).hexdigest()
