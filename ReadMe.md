@@ -22,7 +22,7 @@ pip install iracing_league_session_auditor
 ### From source
 
 ```bash
-git clone https://github.com/username/iracing_league_session_auditor.git
+git clone https://github.com/TylerAgostino/iracing_league_session_auditor.git
 cd iracing_league_session_auditor
 pip install -e .
 ```
@@ -144,12 +144,7 @@ cp .env.example .env
 
 ## Notifications
 
-When validation fails, the tool can send notifications to a webhook URL. This is useful for integration with services like:
-
-- Slack
-- Discord
-- Microsoft Teams
-- Custom webhook endpoints
+When validation fails, the tool can send notifications to a webhook URL. This is currently only implemented for [Discord webhooks](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)
 
 ## Development
 
@@ -168,7 +163,3 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 # Install development dependencies
 pip install -e ".[dev]"
 ```
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
