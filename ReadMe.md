@@ -40,9 +40,14 @@ docker run -v $(pwd)/expectations.json:/app/expectations.json -v $(pwd)/data:/da
 ## Usage
 
 ### Command Line
-
 ```bash
 iracing-audit --username "your_iracing_email" --password "your_iracing_password" --league-id 12345 --expectations-path "expectations.json"
+```
+Windows may require using `iracing-audit.exe` instead of `iracing-audit`.
+
+Or directly with:
+```bash
+python -m iracing_league_session_auditor --username "your_iracing_email" --password "your_iracing_password" --league-id 12345 --expectations-path "expectations.json"
 ```
 
 ### Options
