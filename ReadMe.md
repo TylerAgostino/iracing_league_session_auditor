@@ -113,6 +113,8 @@ Example:
 ]
 ```
 
+If there is no expectations file, the tool will create one using the first session it finds in the league. This can be useful for initial setup.
+
 ### Cron Expressions for Session Scheduling
 
 The tool supports validating session start times using cron expressions with a margin of error in minutes:
@@ -121,11 +123,13 @@ The tool supports validating session start times using cron expressions with a m
 "launch_at": { "cron": "30 0 * * 4", "margin": 15 }
 ```
 
-This example expects sessions to start at 00:30 on Thursdays with a 15-minute margin.
+This example expects sessions to start at 00:30 on Thursdays with a 15-minute margin. 
+
+For whatever reason, Python has to be different and uses different numbers for the days of the week in cron expressions. This is dumb, and I choose to use unix style instead. So, in this case, 0 = Sunday, 1 = Monday, ..., 6 = Saturday.
 
 ### State File
 
-The state file tracks session states to avoid unnecessary revalidation. This file is managed automatically by the tool.
+The state file tracks session states to avoid unnecessary revalidation. This file is managed automatically by the tool. You can force revalidation of all sessions using the `--force` flag.
 
 ### Environment Variables
 
