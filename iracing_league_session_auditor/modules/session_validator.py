@@ -48,10 +48,44 @@ class SessionValidator:
             with open(expectations_path, "r") as f:
                 expectations_file_content: str = f.read()
         except FileNotFoundError:
-            print(
-                f"Expectations file not found at {expectations_path}. Using empty expectations."
+            placeholder_content = json.dumps(
+                [
+                    {
+                        "name": "NASCAR Trucks",
+                        "expectation": {
+                            "cars": [
+                                {
+                                    "car_id": 123,
+                                    "car_name": "NASCAR Truck Ford F150",
+                                    "car_class_id": 0,
+                                },
+                                {
+                                    "car_id": 111,
+                                    "car_name": "NASCAR Truck Chevrolet Silverado",
+                                    "car_class_id": 0,
+                                },
+                                {
+                                    "car_id": 155,
+                                    "car_name": "NASCAR Truck Toyota Tundra TRD Pro",
+                                    "car_class_id": 0,
+                                },
+                            ],
+                            "driver_changes": False,
+                            "launch_at": {"cron": "30 0 * * 4", "margin": 15},
+                            "league_season_id": 126035,
+                            "lone_qualify": True,
+                            "password_protected": False,
+                            "practice_length": 20,
+                            "qualify_length": 20,
+                            "race_length": 20,
+                        },
+                    }
+                ],
+                indent=2,
             )
-            raise
+            with open(expectations_path, "w") as f:
+                _ = f.write(placeholder_content)
+            expectations_file_content = placeholder_content
         self.expectations_revision: str = hashlib.sha256(
             expectations_file_content.encode()
         ).hexdigest()
@@ -345,12 +379,14 @@ class SessionValidator:
         exact = self.exact_match()
         if exact:
             results.append(f"{PASS_ICON} Exact match found for expectation.")
-            results.append(f"Expectation details: {json.dumps(exact, indent=2)}")
+            results.append(f"Matched Expectation: {exact.get('name', 'Unnamed')}")
         else:
             results.append(f"{FAIL_ICON} No exact match found for any expectation.")
             for expectation in self.expectations:
                 _, invalid = self.get_valid_invalid_tuple_for_expectation(expectation)
-                results.append(f"Expectation: {expectation.get('name', 'Unnamed')}")
+                results.append(
+                    f"\n\n**Expectation: {expectation.get('name', 'Unnamed')}**"
+                )
                 if invalid:
                     results.append("Invalid fields:")
                     for severity, desc in invalid:

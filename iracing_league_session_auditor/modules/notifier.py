@@ -8,7 +8,7 @@ class Notifier:
     def __init__(self, webhook_url: str):
         self.webhook_url: str = webhook_url
 
-    def send_notification(self, payload: str):
+    def send_notification(self, payload: dict[str, str | dict[str, str | int]]):
         # Placeholder for sending notification logic
         log.info(f"Sending notification to {self.webhook_url}: {payload}")
         headers = {"Content-Type": "application/json"}

@@ -62,8 +62,18 @@ def run_validation(
                     f"\n\n\n\nValidation results for session {session.get('session_desc', id)}:\n{output}"
                 )
                 if webhook_url:
+                    webhook_content = {
+                        "content": "",
+                        "embeds": [
+                            {
+                                "title": f"Validation results for session {session.get('session_desc', id)}",
+                                "description": output,
+                                "color": 65280 if validator.exact_match() else 16711680,
+                            }
+                        ],
+                    }
                     notifier = Notifier(webhook_url)
-                    _ = notifier.send_notification(output)
+                    _ = notifier.send_notification(webhook_content)
 
 
 def main():
@@ -142,6 +152,7 @@ def main():
     except Exception as e:
         logger.error(f"Error during execution: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 
