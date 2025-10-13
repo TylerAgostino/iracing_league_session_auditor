@@ -183,12 +183,22 @@ class SessionValidator:
 
         if isinstance(expected_value, CronMatcher):
             """CronMatcher provides its own matching logic"""
-            if isinstance(actual_value, str) and expected_value(actual_value):
-                return (PASS_ICON, f"{field_name} matches cron pattern")
+
+            if isinstance(actual_value, str):
+                cron_match = expected_value(actual_value)
+                if cron_match[0]:
+                    return (PASS_ICON, f"{field_name} matches cron pattern")
+
+                try:
+                    fail_string = cron_match[1]
+                except UnboundLocalError:
+                    fail_string = f"{field_name} does not match cron pattern: '{actual_value}' does not match '{expected_value.cron_expr}' (margin: {expected_value.minute_tolerance} min)"
+
+                return (FAIL_ICON, fail_string)
             else:
                 return (
                     FAIL_ICON,
-                    f"{field_name} does not match cron pattern: '{actual_value}' does not match '{expected_value.cron_expr}' (margin: {expected_value.minute_tolerance} min)",
+                    f"{field_name} is not a string as expected - got {type(actual_value).__name__} with value: {actual_value}",
                 )
         elif isinstance(expected_value, dict):
             """

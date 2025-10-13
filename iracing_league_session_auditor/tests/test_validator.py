@@ -464,7 +464,7 @@ class TestSessionValidator(unittest.TestCase):
         Verifies that the validator correctly handles CronMatcher objects for time-based validation.
         Tests the integration with the CronMatcher component when a match is found.
         """
-        mock_cron_call.return_value = True
+        mock_cron_call.return_value = (True, "")
 
         validator = SessionValidator(
             cast(SessionDefinition, self.test_session), self.expectations_path
@@ -488,7 +488,7 @@ class TestSessionValidator(unittest.TestCase):
         Verifies that the validator correctly handles CronMatcher objects for time-based validation.
         Tests the integration with the CronMatcher component when no match is found.
         """
-        mock_cron_call.return_value = False
+        mock_cron_call.return_value = (False, "")
 
         validator = SessionValidator(
             cast(SessionDefinition, self.test_session), self.expectations_path

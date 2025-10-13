@@ -103,7 +103,7 @@ class CronMatcher:
         """Return a serialized representation of the CronMatcher."""
         return {"cron": self.cron_expr, "margin": self.minute_tolerance}
 
-    def __call__(self, value: str):
+    def __call__(self, value: str) -> tuple[bool, str]:
         """
         Check if a timestamp is within tolerance of the cron schedule.
 
