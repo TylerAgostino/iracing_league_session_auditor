@@ -236,7 +236,6 @@
                 "consolation_run_always": false,
                 "consolation_scores_champ_points": false,
                 "heat_caution_type": 0,
-                "heat_laps": 250,
                 "heat_length_minutes": 15,
                 "heat_max_field_size": 62,
                 "heat_num_from_each_to_main": 64,
