@@ -180,10 +180,67 @@ class SessionValidator:
                     f"{field_name} is not a string as expected - got {type(actual_value).__name__} with value: {actual_value}",
                 )
         elif isinstance(expected_value, dict):
-            """
-            For dicts, each element present in expected must be in actual and match.
-            Actual can have extra fields not in expected
-            """
+            """Handle dictionaries, checking first if it's a comparison operator config"""
+            if (
+                len(expected_value) == 2
+                and "operator" in expected_value
+                and "value" in expected_value
+            ):
+                exp_value = expected_value["value"]
+                operator = expected_value["operator"]
+
+                # Validate operator
+                valid_operators = {"=", ">", "<", "!="}
+                if operator not in valid_operators:
+                    return (
+                        FAIL_ICON,
+                        f"{field_name} has invalid operator '{operator}'. Must be one of: {', '.join(valid_operators)}",
+                    )
+
+                # Convert values to numbers if both are numeric
+                if isinstance(actual_value, (int, float)) and isinstance(
+                    exp_value, (int, float)
+                ):
+                    actual_num = float(actual_value)
+                    expected_num = float(exp_value)
+
+                    if operator == ">" and actual_num > expected_num:
+                        return (PASS_ICON, f"{field_name} is greater than {exp_value}")
+                    elif operator == "<" and actual_num < expected_num:
+                        return (PASS_ICON, f"{field_name} is less than {exp_value}")
+                    elif operator == "!=" and actual_num != expected_num:
+                        return (PASS_ICON, f"{field_name} is not equal to {exp_value}")
+                    elif operator == "=" and actual_num == expected_num:
+                        return (PASS_ICON, f"{field_name} equals {exp_value}")
+                    else:
+                        return (
+                            FAIL_ICON,
+                            f"{field_name} fails comparison - expected {operator} {exp_value}, got {actual_value}",
+                        )
+
+                # Handle string comparisons - only allow = and != operators
+                elif isinstance(actual_value, str) and isinstance(exp_value, str):
+                    if operator in {">", "<"}:
+                        return (
+                            FAIL_ICON,
+                            f"{field_name} - {operator} operator cannot be used with strings",
+                        )
+                    elif operator == "!=" and actual_value != exp_value:
+                        return (PASS_ICON, f"{field_name} is not equal to {exp_value}")
+                    elif operator == "=" and actual_value == exp_value:
+                        return (PASS_ICON, f"{field_name} equals {exp_value}")
+                    else:
+                        return (
+                            FAIL_ICON,
+                            f"{field_name} fails comparison - expected {operator} {exp_value}, got {actual_value}",
+                        )
+
+                return (
+                    FAIL_ICON,
+                    f"{field_name} comparison failed - incompatible types for comparison: {type(actual_value).__name__} vs {type(exp_value).__name__}",
+                )
+
+            # Handle regular dictionary comparison
             if not isinstance(actual_value, dict):
                 return (
                     FAIL_ICON,

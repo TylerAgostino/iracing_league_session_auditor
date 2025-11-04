@@ -35,16 +35,25 @@
                 "heat_caution_type": 0,
                 "heat_laps": 250,
                 "heat_length_minutes": 15,
-                "heat_num_from_each_to_main": 64,
+                "heat_num_from_each_to_main": {
+                    "operator": ">",
+                    "value": 60
+                },
                 "heat_num_position_to_invert": 0,
                 "heat_scores_champ_points": true,
                 "heat_session_minutes_estimate": 157,
                 "hidden": false,
                 "main_laps": 250,
                 "main_length_minutes": 60,
-                "main_max_field_size": 62,
+                "main_max_field_size": {
+                    "operator": ">",
+                    "value": 60
+                },
                 "main_num_position_to_invert": 12,
-                "max_entrants": 62,
+                "max_entrants": {
+                    "operator": ">",
+                    "value": 60
+                },
                 "open_practice": true,
                 "pre_main_practice_length_minutes": 5,
                 "pre_qual_num_to_main": 0,
@@ -102,16 +111,25 @@
                 "heat_caution_type": 0,
                 "heat_laps": 250,
                 "heat_length_minutes": 15,
-                "heat_num_from_each_to_main": 64,
+                "heat_num_from_each_to_main": {
+                    "operator": ">",
+                    "value": 60
+                },
                 "heat_num_position_to_invert": 0,
                 "heat_scores_champ_points": true,
                 "heat_session_minutes_estimate": 157,
                 "hidden": false,
                 "main_laps": 250,
                 "main_length_minutes": 60,
-                "main_max_field_size": 62,
+                "main_max_field_size": {
+                    "operator": ">",
+                    "value": 60
+                },
                 "main_num_position_to_invert": 12,
-                "max_entrants": 62,
+                "max_entrants": {
+                    "operator": ">",
+                    "value": 60
+                },
                 "open_practice": true,
                 "pre_main_practice_length_minutes": 5,
                 "pre_qual_num_to_main": 0,
@@ -170,16 +188,25 @@
                 "heat_caution_type": 0,
                 "heat_laps": 250,
                 "heat_length_minutes": 15,
-                "heat_num_from_each_to_main": 64,
+                "heat_num_from_each_to_main": {
+                    "operator": ">",
+                    "value": 60
+                },
                 "heat_num_position_to_invert": 0,
                 "heat_scores_champ_points": true,
                 "heat_session_minutes_estimate": 157,
                 "hidden": false,
                 "main_laps": 250,
                 "main_length_minutes": 60,
-                "main_max_field_size": 62,
+                "main_max_field_size": {
+                    "operator": ">",
+                    "value": 60
+                },
                 "main_num_position_to_invert": 12,
-                "max_entrants": 62,
+                "max_entrants": {
+                    "operator": ">",
+                    "value": 60
+                },
                 "open_practice": true,
                 "pre_main_practice_length_minutes": 5,
                 "pre_qual_num_to_main": 0,
@@ -231,16 +258,25 @@
                 "consolation_scores_champ_points": false,
                 "heat_caution_type": 0,
                 "heat_length_minutes": 15,
-                "heat_num_from_each_to_main": 64,
+                "heat_num_from_each_to_main": {
+                    "operator": ">",
+                    "value": 60
+                },
                 "heat_num_position_to_invert": 0,
                 "heat_scores_champ_points": true,
                 "heat_session_minutes_estimate": 127,
                 "hidden": false,
                 "main_laps": 250,
                 "main_length_minutes": 15,
-                "main_max_field_size": 62,
+                "main_max_field_size": {
+                    "operator": ">",
+                    "value": 60
+                },
                 "main_num_position_to_invert": 255,
-                "max_entrants": 62,
+                "max_entrants": {
+                    "operator": ">",
+                    "value": 60
+                },
                 "open_practice": true,
                 "pre_main_practice_length_minutes": 0,
                 "pre_qual_num_to_main": 0,

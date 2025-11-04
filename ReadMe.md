@@ -104,6 +104,7 @@ Example:
         }
       ],
       "launch_at": { "cron": "30 0 * * 4", "margin": 15 },
+      "max_drivers": { "operator": ">", "value": 20 },
       "league_id": 8579,
       "practice_length": 20,
       "qualify_length": 20,
