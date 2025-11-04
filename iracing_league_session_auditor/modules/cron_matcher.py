@@ -1,9 +1,15 @@
 """
 Cron matching utility for comparing time values against cron expressions.
+
+This version evaluates the cron expression in a specified IANA time zone (e.g.
+"America/New_York") using the standard library's `zoneinfo` so the matching
+automatically accounts for daylight saving transitions.
 """
 
 import datetime
-from typing import final, cast
+from typing import cast, final
+
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 
 @final
@@ -14,20 +20,40 @@ class CronMatcher:
     This is used for validating that session launch times occur at expected times.
     """
 
-    def __init__(self, cron_expr: str = "30 20 * * 2", minute_tolerance: int = 15):
+    def __init__(
+        self,
+        cron_expr: str = "30 20 * * 2",
+        minute_tolerance: int = 15,
+        time_zone: str = "UTC",
+    ):
         """
-        Initialize the CronMatcher with a cron expression and tolerance.
+
+        Initialize the CronMatcher with a cron expression, tolerance, and time zone.
 
         Args:
             cron_expr: Cron expression in format "minute hour day_of_month month day_of_week"
+
             minute_tolerance: Number of minutes before/after the cron time that is considered valid
+
+            time_zone: IANA time zone in which the cron expression should be evaluated
+                       (e.g., "America/New_York"). Uses the stdlib `zoneinfo` so DST is
+                       handled automatically for the date under consideration.
         """
+
         self.cron_expr = cron_expr
         self.minute_tolerance = minute_tolerance
+        self.time_zone_str = time_zone
+
+        try:
+            self.time_zone = ZoneInfo(time_zone)
+        except ZoneInfoNotFoundError:
+            raise ValueError(f"Invalid time zone: {time_zone}")
+
         # Parse cron fields
         fields = cron_expr.strip().split()
         if len(fields) != 5:
             raise ValueError(f"Invalid cron expression: {cron_expr}")
+
         (
             self.cron_minute,
             self.cron_hour,
@@ -75,7 +101,13 @@ class CronMatcher:
         return vals
 
     def _nearest_cron_time(self, dt: datetime.datetime):
-        """Find the nearest time that matches the cron expression."""
+        """Find the nearest time that matches the cron expression.
+
+        Expects `dt` to be timezone-aware and already converted to the target
+        local timezone (self.time_zone). The search moves in local elapsed time
+        (minutes), which correctly handles DST offsets because arithmetic on
+        aware datetimes accounts for fold/gap transitions.
+        """
         # Only supports minute, hour, and weekday fields for simplicity
         minutes = self._parse_field(self.cron_minute, 0, 59)
         hours = self._parse_field(self.cron_hour, 0, 23)
@@ -101,7 +133,11 @@ class CronMatcher:
 
     def to_json(self) -> dict[str, str | int]:
         """Return a serialized representation of the CronMatcher."""
-        return {"cron": self.cron_expr, "margin": self.minute_tolerance}
+        return {
+            "cron": self.cron_expr,
+            "margin": self.minute_tolerance,
+            "timezone": self.time_zone_str,
+        }
 
     def __call__(self, value: str) -> tuple[bool, str]:
         """
@@ -115,17 +151,28 @@ class CronMatcher:
             and the string provides a descriptive message
         """
         try:
+            # Parse the incoming timestamp. Accept "Z" or explicit offsets.
             dt = datetime.datetime.fromisoformat(value.replace("Z", "+00:00"))
-            nearest, delta = self._nearest_cron_time(dt)
+
+            # If parsed datetime is naive, treat it as UTC to be conservative.
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=datetime.timezone.utc)
+
+            # Convert the timestamp into the configured local timezone for comparison.
+            local_dt = dt.astimezone(self.time_zone)
+
+            # Find nearest cron time relative to the local timezone datetime
+            nearest, delta = self._nearest_cron_time(local_dt)
+
             if delta is not None and delta <= self.minute_tolerance:
                 return (
                     True,
-                    f"Launch time OK: {dt.strftime('%A %Y-%m-%d %H:%M %Z')} (nearest cron: {nearest.strftime('%A %Y-%m-%d %H:%M %Z') if nearest else nearest}, delta {delta:.1f} min)",
+                    f"Launch time OK: {local_dt.strftime('%A %Y-%m-%d %H:%M %Z')} (nearest cron: {nearest.strftime('%A %Y-%m-%d %H:%M %Z') if nearest else nearest}, delta {delta:.1f} min)",
                 )
             else:
                 return (
                     False,
-                    f"Time not within {self.minute_tolerance} min of cron ({self.cron_expr}): {dt.strftime('%A %Y-%m-%d %H:%M %Z')} (nearest: {nearest.strftime('%A %Y-%m-%d %H:%M %Z') if nearest else nearest}, delta {delta:.1f} min)",
+                    f"Time not within {self.minute_tolerance} min of cron ({self.cron_expr} @ {self.time_zone_str}): {local_dt.strftime('%A %Y-%m-%d %H:%M %Z')} (nearest: {nearest.strftime('%A %Y-%m-%d %H:%M %Z') if nearest else nearest}, delta {delta:.1f} min)",
                 )
         except Exception as call_exception:
-            return False, f"Invalid date format: {value} ({call_exception})"
+            return False, f"Invalid date format or value: {value} ({call_exception})"

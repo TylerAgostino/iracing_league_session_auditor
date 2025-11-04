@@ -8,9 +8,9 @@ with a tolerance window.
 
 # pyright: basic
 
-import unittest
 import datetime
-from unittest.mock import patch
+import unittest
+
 from ..modules.cron_matcher import CronMatcher
 
 
@@ -119,7 +119,9 @@ class TestCronMatcher(unittest.TestCase):
         """Test finding the nearest cron time with an exact match."""
         # Tuesday (weekday 1 in Python) at 20:30
         matcher = CronMatcher("30 20 * * 2")  # Tuesdays at 8:30pm
-        dt = datetime.datetime(2023, 11, 14, 20, 30)  # Tue, 2023-11-14 20:30
+        dt = datetime.datetime(
+            2023, 11, 14, 20, 30, tzinfo=datetime.timezone.utc
+        )  # Tue, 2023-11-14 20:30 UTC
 
         nearest, delta = matcher._nearest_cron_time(dt)
 
@@ -130,26 +132,30 @@ class TestCronMatcher(unittest.TestCase):
         """Test finding the nearest cron time with a near match."""
         matcher = CronMatcher("30 20 * * 2")  # Tuesdays at 8:30pm
         dt = datetime.datetime(
-            2023, 11, 14, 20, 35
-        )  # Tue, 2023-11-14 20:35 (5 min after)
+            2023, 11, 14, 20, 35, tzinfo=datetime.timezone.utc
+        )  # Tue, 2023-11-14 20:35 UTC (5 min after)
 
         nearest, delta = matcher._nearest_cron_time(dt)
 
-        expected_nearest = datetime.datetime(2023, 11, 14, 20, 30)  # 5 minutes earlier
+        expected_nearest = datetime.datetime(
+            2023, 11, 14, 20, 30, tzinfo=datetime.timezone.utc
+        )  # 5 minutes earlier
         self.assertEqual(nearest, expected_nearest)
         self.assertEqual(delta, 5)  # 5 minutes difference
 
     def test_nearest_cron_time_different_weekday(self) -> None:
         """Test finding the nearest cron time on a different weekday."""
         matcher = CronMatcher("30 20 * * 2")  # Tuesdays at 8:30pm
-        dt = datetime.datetime(2023, 11, 15, 20, 30)  # Wed, 2023-11-15 20:30
+        dt = datetime.datetime(
+            2023, 11, 15, 20, 30, tzinfo=datetime.timezone.utc
+        )  # Wed, 2023-11-15 20:30 UTC
 
         nearest, delta = matcher._nearest_cron_time(dt)
 
         # Should find either the previous Tuesday or the next Tuesday
         expected_prev = datetime.datetime(
-            2023, 11, 14, 20, 30
-        )  # Previous Tue, 2023-11-14 20:30
+            2023, 11, 14, 20, 30, tzinfo=datetime.timezone.utc
+        )  # Previous Tue, 2023-11-14 20:30 UTC
 
         # It should choose the closest one (previous Tuesday)
         self.assertEqual(nearest, expected_prev)
@@ -158,14 +164,16 @@ class TestCronMatcher(unittest.TestCase):
     def test_nearest_cron_time_multiple_options(self) -> None:
         """Test finding the nearest cron time with multiple weekday options."""
         matcher = CronMatcher("30 20 * * 1,3,5")  # Mon,Wed,Fri at 8:30pm
-        dt = datetime.datetime(2023, 11, 14, 20, 30)  # Tue, 2023-11-14 20:30
+        dt = datetime.datetime(
+            2023, 11, 14, 20, 30, tzinfo=datetime.timezone.utc
+        )  # Tue, 2023-11-14 20:30 UTC
 
         nearest, delta = matcher._nearest_cron_time(dt)
 
         # Should find the closest among Mon,Wed,Fri
         expected_mon = datetime.datetime(
-            2023, 11, 13, 20, 30
-        )  # Mon, 2023-11-13 20:30 (1 day before)
+            2023, 11, 13, 20, 30, tzinfo=datetime.timezone.utc
+        )  # Mon, 2023-11-13 20:30 UTC (1 day before)
 
         # It should choose one of the closest options (both Monday and Wednesday are 1 day away)
         # The implementation chooses the earlier date when distances are equal
@@ -179,7 +187,9 @@ class TestCronMatcher(unittest.TestCase):
         matcher = CronMatcher("15 8 * * 1,3,5", 10)
         json_data = matcher.to_json()
 
-        self.assertEqual(json_data, {"cron": "15 8 * * 1,3,5", "margin": 10})
+        self.assertEqual(
+            json_data, {"cron": "15 8 * * 1,3,5", "margin": 10, "timezone": "UTC"}
+        )
 
     def test_call_exact_match(self) -> None:
         """Test the __call__ method with an exact match."""
@@ -250,22 +260,56 @@ class TestCronMatcher(unittest.TestCase):
         self.assertTrue(result1)
         self.assertTrue(result2)
 
-    @patch("iracing_league_session_auditor.modules.cron_matcher.datetime")
-    def test_call_with_dst_transitions(self, mock_datetime) -> None:
-        """Test handling of DST transitions (simulated with patch)."""
-        # Mock the datetime to return a fixed datetime for parsing
-        mock_dt = datetime.datetime(2023, 11, 14, 20, 30, tzinfo=datetime.timezone.utc)
-        mock_datetime.datetime.fromisoformat.return_value = mock_dt
+    def test_timezone_matching(self) -> None:
+        """Test that cron patterns match in the configured timezone."""
+        # Configure matcher for US Eastern time, expecting 8:30pm local time
+        matcher = CronMatcher(
+            "30 20 * * 2", time_zone="America/New_York"
+        )  # Tuesday 8:30pm ET
 
-        # Use real _nearest_cron_time for this test
-        mock_datetime.datetime.side_effect = datetime.datetime
-        mock_datetime.timedelta.side_effect = datetime.timedelta
-
-        matcher = CronMatcher("30 20 * * 2")
-        result, message = matcher("2023-11-14T20:30:00Z")
-
+        # Winter time (EST = UTC-5)
+        # Local: Tuesday 2024-01-09 20:30 EST
+        # UTC: Wednesday 2024-01-10 01:30 UTC
+        result, message = matcher("2024-01-10T01:30:00Z")
         self.assertTrue(result)
         self.assertIn("Launch time OK", message)
+        self.assertIn("EST", message)  # Should show local time in messages
+
+        # A time that's 8:30pm UTC but not 8:30pm Eastern should fail
+        # UTC: Tuesday 2024-01-09 20:30 UTC
+        # Local: Tuesday 2024-01-09 15:30 EST (wrong local time)
+        result, message = matcher("2024-01-09T20:30:00Z")
+        self.assertFalse(result)
+        self.assertIn("Time not within", message)
+
+    def test_dst_transition_handling(self) -> None:
+        """Test cron matching across DST transitions."""
+        # Configure for US Eastern, 8:30pm Tuesday sessions
+        matcher = CronMatcher("30 20 * * 2", time_zone="America/New_York")
+
+        # Before DST starts - Tuesday March 5, 2024 8:30pm Eastern
+        # EST (UTC-5) is in effect
+        result, message = matcher("2024-03-06T01:30:00Z")  # 8:30pm EST = 1:30am UTC
+        self.assertTrue(result)
+        self.assertIn("EST", message)
+
+        # After DST starts (March 10, 2024) - Tuesday March 19, 2024 8:30pm Eastern
+        # EDT (UTC-4) is in effect
+        result, message = matcher("2024-03-20T00:30:00Z")  # 8:30pm EDT = 12:30am UTC
+        self.assertTrue(result)
+        self.assertIn("EDT", message)
+
+        # Before DST ends - Tuesday Oct 29, 2024 8:30pm Eastern
+        # EDT (UTC-4) is in effect
+        result, message = matcher("2024-10-30T00:30:00Z")  # 8:30pm EDT = 12:30am UTC
+        self.assertTrue(result)
+        self.assertIn("EDT", message)
+
+        # After DST ends (Nov 3, 2024) - Tuesday Nov 5, 2024 8:30pm Eastern
+        # EST (UTC-5) is in effect
+        result, message = matcher("2024-11-06T01:30:00Z")  # 8:30pm EST = 1:30am UTC
+        self.assertTrue(result)
+        self.assertIn("EST", message)
 
 
 if __name__ == "__main__":

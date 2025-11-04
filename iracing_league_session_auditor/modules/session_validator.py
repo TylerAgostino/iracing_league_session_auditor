@@ -1,10 +1,11 @@
-from pathlib import Path
-from typing import cast
-from .cron_matcher import CronMatcher
 import hashlib
 import json
 import os
+from pathlib import Path
+from typing import cast
+
 from . import types
+from .cron_matcher import CronMatcher
 
 # Constants
 PASS_ICON = "✅"
@@ -77,8 +78,12 @@ class SessionValidator:
                     if isinstance(val, dict) and "cron" in val and "margin" in val:
                         assert isinstance(val["cron"], str)
                         assert isinstance(val["margin"], int)
+                        # Optional timezone support: allow callers to provide an IANA timezone
+                        # (e.g. "America/New_York"). If missing, default to UTC.
+                        tz = val.get("timezone", "UTC")
+                        assert isinstance(tz, str)
                         exp["expectation"][key] = CronMatcher(
-                            val["cron"], val["margin"]
+                            val["cron"], val["margin"], tz
                         )
         self.expectations: list[ExpectationDefinition] = expectations
         self.session_definition: SessionDefinition = session_definition
