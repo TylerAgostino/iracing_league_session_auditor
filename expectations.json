@@ -2,6 +2,7 @@
     {
         "name": "NASCAR Trucks",
         "expectation": {
+            "damage_model": 0,
             "cars": [
                 {
                     "car_id": 123,
@@ -60,7 +61,7 @@
                 "race_style": 1
             },
             "launch_at": {
-                "cron": "30 0 * * 4",
+                "cron": "30 23 * * 3",
                 "margin": 15
             },
             "league_id": 8579,
@@ -82,6 +83,7 @@
     {
         "name": "Vees",
         "expectation": {
+            "damage_model": 0,
             "cars": [
                 {
                     "car_id": 142,
@@ -130,7 +132,7 @@
                 "race_style": 1
             },
             "launch_at": {
-                "cron": "30 0 * * 4",
+                "cron": "30 23 * * 3",
                 "margin": 15
             },
             "league_id": 8579,
@@ -152,6 +154,7 @@
     {
         "name": "Jumpy Trucks",
         "expectation": {
+            "damage_model": 0,
             "cars": [
                 {
                     "car_id": 113,
@@ -200,7 +203,7 @@
                 "race_style": 1
             },
             "launch_at": {
-                "cron": "30 0 * * 4",
+                "cron": "30 23 * * 3",
                 "margin": 15
             },
             "league_id": 8579,
@@ -222,6 +225,7 @@
     {
         "name": "Monday",
         "expectation": {
+            "damage_model": 0,
             "driver_changes": false,
             "entry_count": 0,
             "heat_ses_info": {
@@ -263,7 +267,7 @@
                 "race_style": 1
             },
             "launch_at": {
-                "cron": "30 0 * * 2",
+                "cron": "30 23 * * 1",
                 "margin": 15
             },
             "league_id": 8579,
