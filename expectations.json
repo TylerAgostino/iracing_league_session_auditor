@@ -2,7 +2,7 @@
     {
         "name": "NASCAR Trucks",
         "expectation": {
-            "damage_model": 0,
+            "damage_model": 3,
             "cars": [
                 {
                     "car_id": 123,
@@ -35,7 +35,6 @@
                 "heat_caution_type": 0,
                 "heat_laps": 250,
                 "heat_length_minutes": 15,
-                "heat_max_field_size": 62,
                 "heat_num_from_each_to_main": 64,
                 "heat_num_position_to_invert": 0,
                 "heat_scores_champ_points": true,
@@ -66,16 +65,12 @@
                 "timezone": "America/New_York"
             },
             "league_id": 8579,
+            "rolling_starts": false,
+            "full_course_cautions": false,
             "league_season_id": 126035,
             "lone_qualify": false,
             "password_protected": false,
-            "practice_length": 20,
-            "qualify_laps": 1,
-            "qualify_length": 20,
-            "race_laps": 0,
-            "race_length": 20,
             "team_entry_count": 0,
-            "time_limit": 180,
             "track_state": {
                 "leave_marbles": false
             }
@@ -84,7 +79,7 @@
     {
         "name": "Vees",
         "expectation": {
-            "damage_model": 0,
+            "damage_model": 3,
             "cars": [
                 {
                     "car_id": 142,
@@ -107,7 +102,6 @@
                 "heat_caution_type": 0,
                 "heat_laps": 250,
                 "heat_length_minutes": 15,
-                "heat_max_field_size": 62,
                 "heat_num_from_each_to_main": 64,
                 "heat_num_position_to_invert": 0,
                 "heat_scores_champ_points": true,
@@ -138,14 +132,11 @@
                 "timezone": "America/New_York"
             },
             "league_id": 8579,
+            "rolling_starts": false,
+            "full_course_cautions": false,
             "league_season_id": 126035,
             "lone_qualify": false,
             "password_protected": false,
-            "practice_length": 20,
-            "qualify_laps": 1,
-            "qualify_length": 20,
-            "race_laps": 0,
-            "race_length": 20,
             "team_entry_count": 0,
             "time_limit": 180,
             "track_state": {
@@ -156,7 +147,7 @@
     {
         "name": "Jumpy Trucks",
         "expectation": {
-            "damage_model": 0,
+            "damage_model": 3,
             "cars": [
                 {
                     "car_id": 113,
@@ -179,7 +170,6 @@
                 "heat_caution_type": 0,
                 "heat_laps": 250,
                 "heat_length_minutes": 15,
-                "heat_max_field_size": 62,
                 "heat_num_from_each_to_main": 64,
                 "heat_num_position_to_invert": 0,
                 "heat_scores_champ_points": true,
@@ -210,14 +200,11 @@
                 "timezone": "America/New_York"
             },
             "league_id": 8579,
+            "rolling_starts": false,
+            "full_course_cautions": false,
             "league_season_id": 126035,
             "lone_qualify": false,
             "password_protected": false,
-            "practice_length": 20,
-            "qualify_laps": 1,
-            "qualify_length": 20,
-            "race_laps": 0,
-            "race_length": 20,
             "team_entry_count": 0,
             "time_limit": 180,
             "track_state": {
@@ -228,7 +215,7 @@
     {
         "name": "Monday",
         "expectation": {
-            "damage_model": 0,
+            "damage_model": 3,
             "driver_changes": false,
             "entry_count": 0,
             "heat_ses_info": {
@@ -244,7 +231,6 @@
                 "consolation_scores_champ_points": false,
                 "heat_caution_type": 0,
                 "heat_length_minutes": 15,
-                "heat_max_field_size": 62,
                 "heat_num_from_each_to_main": 64,
                 "heat_num_position_to_invert": 0,
                 "heat_scores_champ_points": true,
@@ -275,14 +261,11 @@
                 "timezone": "America/New_York"
             },
             "league_id": 8579,
+            "rolling_starts": false,
+            "full_course_cautions": false,
             "league_season_id": 0,
             "lone_qualify": false,
             "password_protected": false,
-            "practice_length": 20,
-            "qualify_laps": 1,
-            "qualify_length": 20,
-            "race_laps": 0,
-            "race_length": 20,
             "team_entry_count": 0,
             "time_limit": 180
         }
