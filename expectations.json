@@ -235,7 +235,7 @@
             "team_entry_count": 0,
             "time_limit": 180,
             "track_state": {
-                "leave_marbles": false
+                "leave_marbles": true
             }
         }
     },
