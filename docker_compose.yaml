@@ -18,6 +18,26 @@ services:
             --expectations-path "/app/expectations.json"
             --webhook-url "${WEBHOOK_URL:-""}"
             --keep-alive
+    auditor-oneoff:
+      image: tyleragostino/iracing_auditor:latest
+      restart: no
+      environment:
+        - IRACING_USERNAME=${IRACING_USERNAME}
+        - IRACING_PASSWORD=${IRACING_PASSWORD}
+        - LEAGUE_ID=${LEAGUE_ID}
+        - WEBHOOK_URL=${WEBHOOK_URL:-""}
+      volumes:
+        - auditor_data:/data
+      command: >
+        --username "${IRACING_USERNAME}"
+        --password "${IRACING_PASSWORD}"
+        --league-id "${LEAGUE_ID}"
+        --state-path "/data/state.json"
+        --expectations-path "/app/expectations.json"
+        --webhook-url "${WEBHOOK_URL:-""}"
+        --force
+      depends_on:
+        - auditor
 
 volumes:
     auditor_data:
