@@ -1,19 +1,40 @@
+import json
 import os
-from .api import iRacingAPIHandler
+from typing import cast
+
 import requests
 from pandas import DataFrame  # pyright: ignore[reportMissingTypeStubs]
-from typing import cast
-import json
+
+from .api import iRacingAPIHandler
 
 if __name__ == "__main__":
-    runtime_email = os.environ.get("IRACING_API_EMAIL", "tyleragostino@gmail.com")
-    runtime_password = os.environ.get("IRACING_API_PASSWORD")
-    if not runtime_email or not runtime_password:
+    # Get OAuth credentials from environment
+    client_id = os.environ.get("IRACING_CLIENT_ID")
+    client_secret = os.environ.get("IRACING_CLIENT_SECRET")
+    runtime_email = os.environ.get("IRACING_USERNAME")
+    runtime_password = os.environ.get("IRACING_PASSWORD")
+    use_password_flow = os.environ.get("IRACING_USE_PASSWORD_FLOW", "true").lower() in (
+        "true",
+        "1",
+        "yes",
+    )
+
+    if not client_id or not client_secret:
         print(
-            "Please set IRACING_API_EMAIL and IRACING_API_PASSWORD environment variables."
+            "Please set IRACING_CLIENT_ID and IRACING_CLIENT_SECRET environment variables."
+        )
+    elif use_password_flow and (not runtime_email or not runtime_password):
+        print(
+            "Password Limited Flow requires IRACING_USERNAME and IRACING_PASSWORD environment variables."
         )
     else:
-        handler = iRacingAPIHandler(runtime_email, runtime_password)
+        handler = iRacingAPIHandler(
+            email=runtime_email,
+            password=runtime_password,
+            client_id=client_id,
+            client_secret=client_secret,
+            use_password_flow=use_password_flow,
+        )
         last_auth_failed = False
         tracks = handler._get_paged_data(  # pyright: ignore[reportPrivateUsage]
             "https://members-ng.iracing.com/data/track/get"

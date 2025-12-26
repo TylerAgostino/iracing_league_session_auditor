@@ -1,44 +1,44 @@
-version: "3.9"
+version: '3.9'
 services:
-    auditor:
-        image: tyleragostino/iracing_auditor:latest
-        restart: unless-stopped
-        environment:
-            - IRACING_USERNAME=${IRACING_USERNAME}
-            - IRACING_PASSWORD=${IRACING_PASSWORD}
-            - LEAGUE_ID=${LEAGUE_ID}
-            - WEBHOOK_URL=${WEBHOOK_URL:-""}
-        volumes:
-            - auditor_data:/data
-        command: >
-            --username "${IRACING_USERNAME}"
-            --password "${IRACING_PASSWORD}"
-            --league-id "${LEAGUE_ID}"
-            --state-path "/data/state.json"
-            --expectations-path "/app/expectations.json"
-            --webhook-url "${WEBHOOK_URL:-""}"
-            --keep-alive
-    auditor-oneoff:
-      image: tyleragostino/iracing_auditor:latest
-      restart: no
-      environment:
-        - IRACING_USERNAME=${IRACING_USERNAME}
-        - IRACING_PASSWORD=${IRACING_PASSWORD}
-        - LEAGUE_ID=${LEAGUE_ID}
-        - WEBHOOK_URL=${WEBHOOK_URL:-""}
-      volumes:
-        - auditor_data:/data
-      command: >
-        --username "${IRACING_USERNAME}"
-        --password "${IRACING_PASSWORD}"
-        --league-id "${LEAGUE_ID}"
-        --state-path "/data/state.json"
-        --expectations-path "/app/expectations.json"
-        --webhook-url "${WEBHOOK_URL:-""}"
-        --force
-      depends_on:
-        - auditor
+  auditor:
+    image: tyleragostino/iracing_auditor:latest
+    restart: unless-stopped
+    environment:
+      - IRACING_USERNAME=${IRACING_USERNAME}
+      - IRACING_PASSWORD=${IRACING_PASSWORD}
+      - IRACING_CLIENT_ID=${IRACING_CLIENT_ID}
+      - IRACING_CLIENT_SECRET=${IRACING_CLIENT_SECRET}
+      - WEBHOOK_URL=${WEBHOOK_URL:-""}
+    volumes:
+      - auditor_data:/data
+    command: >
+      --league-id "${LEAGUE_ID}"
+      --state-path "/data/state.json"
+      --expectations-path "/app/expectations.json"
+      --webhook-url "${WEBHOOK_URL:-""}"
+      --keep-alive
+      --use-password-flow
+  auditor-oneoff:
+    image: tyleragostino/iracing_auditor:latest
+    restart: no
+    environment:
+      - IRACING_USERNAME=${IRACING_USERNAME}
+      - IRACING_PASSWORD=${IRACING_PASSWORD}
+      - IRACING_CLIENT_ID=${IRACING_CLIENT_ID}
+      - IRACING_CLIENT_SECRET=${IRACING_CLIENT_SECRET}
+      - WEBHOOK_URL=${WEBHOOK_URL:-""}
+    volumes:
+      - auditor_data:/data
+    command: >
+      --league-id "${LEAGUE_ID}"
+      --state-path "/data/state.json"
+      --expectations-path "/app/expectations.json"
+      --webhook-url "${WEBHOOK_URL:-""}"
+      --force
+      --use-password-flow
+    depends_on:
+      - auditor
 
 volumes:
-    auditor_data:
-        name: iracing_league_session_auditor_data
+  auditor_data:
+    name: iracing_league_session_auditor_data

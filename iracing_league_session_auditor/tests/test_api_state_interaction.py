@@ -1,7 +1,7 @@
 import os
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from ..modules.api import iRacingAPIHandler
 from ..modules.state_manager import StateManager
@@ -67,11 +67,15 @@ class TestApiStateManagerInteraction(unittest.TestCase):
         # Remove the temporary state file
         os.unlink(self.temp_file.name)
 
-    def test_reordered_list_produces_same_hash(self) -> None:
+    @patch("iracing_league_session_auditor.modules.api.iRacingAPIHandler.login")
+    def test_reordered_list_produces_same_hash(self, mock_login: MagicMock) -> None:
         """
         Test that reordering a list in a session produces the same hash.
         """
-        # Create API handler instance for hashing
+        # Mock login to prevent actual authentication
+        mock_login.return_value = True
+
+        # Create API handler instance for hashing without authentication
         api_handler = iRacingAPIHandler.__new__(iRacingAPIHandler)
 
         # Get hash of original session
@@ -87,13 +91,19 @@ class TestApiStateManagerInteraction(unittest.TestCase):
             "Reordered lists should produce the same hash",
         )
 
-    def test_state_manager_change_detection_with_reordered_lists(self) -> None:
+    @patch("iracing_league_session_auditor.modules.api.iRacingAPIHandler.login")
+    def test_state_manager_change_detection_with_reordered_lists(
+        self, mock_login: MagicMock
+    ) -> None:
         """
         Test that state manager does not detect changes when list order changes.
         """
+        # Mock login to prevent actual authentication
+        mock_login.return_value = True
+
         session_id = str(self.sample_session["session_id"])
 
-        # Create API handler instance for hashing
+        # Create API handler instance for hashing without authentication
         api_handler = iRacingAPIHandler.__new__(iRacingAPIHandler)
 
         # First, add the original session to the state
@@ -115,11 +125,15 @@ class TestApiStateManagerInteraction(unittest.TestCase):
             "Reordered lists should not be detected as a change",
         )
 
-    def test_actual_content_change_is_detected(self) -> None:
+    @patch("iracing_league_session_auditor.modules.api.iRacingAPIHandler.login")
+    def test_actual_content_change_is_detected(self, mock_login: MagicMock) -> None:
         """Test that actual content changes are still detected properly."""
+        # Mock login to prevent actual authentication
+        mock_login.return_value = True
+
         session_id = str(self.sample_session["session_id"])
 
-        # Create API handler instance for hashing
+        # Create API handler instance for hashing without authentication
         api_handler = iRacingAPIHandler.__new__(iRacingAPIHandler)
 
         # First, add the original session to the state
@@ -143,13 +157,19 @@ class TestApiStateManagerInteraction(unittest.TestCase):
         # It SHOULD detect this as a change
         self.assertTrue(change_detected, "Actual content changes should be detected")
 
+    @patch("iracing_league_session_auditor.modules.api.iRacingAPIHandler.login")
     @patch("iracing_league_session_auditor.modules.api.json.dumps")
-    def test_json_serialization_uses_sort_keys(self, mock_dumps) -> None:
+    def test_json_serialization_uses_sort_keys(
+        self, mock_dumps: MagicMock, mock_login: MagicMock
+    ) -> None:
         """Test that json.dumps is called with sort_keys=True when creating the hash."""
+        # Mock login to prevent actual authentication
+        mock_login.return_value = True
+
         # Setup the mock to return a string that can be encoded
         mock_dumps.return_value = "{}"
 
-        # Create API handler instance for hashing
+        # Create API handler instance for hashing without authentication
         api_handler = iRacingAPIHandler.__new__(iRacingAPIHandler)
 
         # Call session_hash method

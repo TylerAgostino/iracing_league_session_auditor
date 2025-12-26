@@ -1,4 +1,4 @@
-version: "3.9"
+version: '3.9'
 services:
   auditor:
     build: .
@@ -7,14 +7,13 @@ services:
     environment:
       - IRACING_USERNAME=${IRACING_USERNAME}
       - IRACING_PASSWORD=${IRACING_PASSWORD}
-      - LEAGUE_ID=${LEAGUE_ID}
+      - IRACING_CLIENT_ID=${IRACING_CLIENT_ID}
+      - IRACING_CLIENT_SECRET=${IRACING_CLIENT_SECRET}
       - WEBHOOK_URL=${WEBHOOK_URL:-""}
     volumes:
       - ./expectations.json:/app/expectations.json:ro
       - auditor_data:/data
     command: >
-      --username "${IRACING_USERNAME}"
-      --password "${IRACING_PASSWORD}"
       --league-id "${LEAGUE_ID}"
       --state-path "/data/state.json"
       --expectations-path "/app/expectations.json"
