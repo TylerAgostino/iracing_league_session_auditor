@@ -1,309 +1,150 @@
 [
-    {
-        "name": "NASCAR Trucks",
-        "expectation": {
-            "damage_model": 3,
-            "cars": [
-                {
-                    "car_id": 123,
-                    "car_name": "NASCAR Truck Ford F150",
-                    "car_class_id": 71
-                },
-                {
-                    "car_id": 111,
-                    "car_name": "NASCAR Truck Chevrolet Silverado",
-                    "car_class_id": 71
-                },
-                {
-                    "car_id": 155,
-                    "car_name": "NASCAR Truck Toyota Tundra TRD Pro",
-                    "car_class_id": 71
-                }
-            ],
-            "driver_changes": false,
-            "heat_ses_info": {
-                "consolation_delta_max_field_size": 0,
-                "consolation_delta_session_laps": 0,
-                "consolation_delta_session_length_minutes": 0,
-                "consolation_first_session_laps": 0,
-                "consolation_first_session_length_minutes": 0,
-                "consolation_num_position_to_invert": 0,
-                "consolation_num_to_consolation": 0,
-                "consolation_num_to_main": 0,
-                "consolation_run_always": false,
-                "consolation_scores_champ_points": false,
-                "heat_caution_type": 0,
-                "heat_laps": 250,
-                "heat_length_minutes": 15,
-                "heat_num_from_each_to_main": {
-                    "operator": ">",
-                    "value": 60
-                },
-                "heat_num_position_to_invert": 0,
-                "heat_scores_champ_points": true,
-                "heat_session_minutes_estimate": 157,
-                "hidden": false,
-                "main_laps": 250,
-                "main_length_minutes": 60,
-                "main_max_field_size": {
-                    "operator": ">",
-                    "value": 60
-                },
-                "main_num_position_to_invert": 12,
-                "max_entrants": {
-                    "operator": ">",
-                    "value": 60
-                },
-                "open_practice": true,
-                "pre_main_practice_length_minutes": 5,
-                "pre_qual_num_to_main": 0,
-                "pre_qual_practice_length_minutes": 50,
-                "qual_caution_type": 0,
-                "qual_laps": 250,
-                "qual_length_minutes": 20,
-                "qual_num_to_main": 0,
-                "qual_open_delay_seconds": 0,
-                "qual_scores_champ_points": false,
-                "qual_scoring": 0,
-                "qual_style": 2,
-                "race_style": 1
-            },
-            "launch_at": {
-                "cron": "30 20 * * 3",
-                "margin": 15,
-                "timezone": "America/New_York"
-            },
-            "league_id": 8579,
-            "rolling_starts": false,
-            "full_course_cautions": false,
-            "league_season_id": 126035,
-            "lone_qualify": false,
-            "password_protected": false,
-            "team_entry_count": 0,
-            "track_state": {
-                "leave_marbles": false
-            }
+  {
+    "name": "Wednesday",
+    "expectation": {
+      "damage_model": 3,
+      "cars": [
+        {
+          "car_id": 67,
+          "car_name": "Global Mazda MX-5 Cup"
         }
-    },
-    {
-        "name": "Vees",
-        "expectation": {
-            "damage_model": 3,
-            "cars": [
-                {
-                    "car_id": 142,
-                    "car_name": "Formula Vee",
-                    "car_class_id": 0
-                }
-            ],
-            "driver_changes": false,
-            "heat_ses_info": {
-                "consolation_delta_max_field_size": 0,
-                "consolation_delta_session_laps": 0,
-                "consolation_delta_session_length_minutes": 0,
-                "consolation_first_session_laps": 0,
-                "consolation_first_session_length_minutes": 0,
-                "consolation_num_position_to_invert": 0,
-                "consolation_num_to_consolation": 0,
-                "consolation_num_to_main": 0,
-                "consolation_run_always": false,
-                "consolation_scores_champ_points": false,
-                "heat_caution_type": 0,
-                "heat_laps": 250,
-                "heat_length_minutes": 15,
-                "heat_num_from_each_to_main": {
-                    "operator": ">",
-                    "value": 60
-                },
-                "heat_num_position_to_invert": 0,
-                "heat_scores_champ_points": true,
-                "heat_session_minutes_estimate": 157,
-                "hidden": false,
-                "main_laps": 250,
-                "main_length_minutes": 60,
-                "main_max_field_size": {
-                    "operator": ">",
-                    "value": 60
-                },
-                "main_num_position_to_invert": 12,
-                "max_entrants": {
-                    "operator": ">",
-                    "value": 60
-                },
-                "open_practice": true,
-                "pre_main_practice_length_minutes": 5,
-                "pre_qual_num_to_main": 0,
-                "pre_qual_practice_length_minutes": 50,
-                "qual_caution_type": 0,
-                "qual_laps": 250,
-                "qual_length_minutes": 20,
-                "qual_num_to_main": 0,
-                "qual_open_delay_seconds": 0,
-                "qual_scores_champ_points": false,
-                "qual_scoring": 0,
-                "qual_style": 2,
-                "race_style": 1
-            },
-            "launch_at": {
-                "cron": "30 20 * * 3",
-                "margin": 15,
-                "timezone": "America/New_York"
-            },
-            "league_id": 8579,
-            "rolling_starts": false,
-            "full_course_cautions": false,
-            "league_season_id": 126035,
-            "lone_qualify": false,
-            "password_protected": false,
-            "team_entry_count": 0,
-            "time_limit": 180,
-            "track_state": {
-                "leave_marbles": false
-            }
-        }
-    },
-    {
-        "name": "Jumpy Trucks",
-        "expectation": {
-            "damage_model": 3,
-            "cars": [
-                {
-                    "car_id": 113,
-                    "car_name": "Lucas Oil Off Road Pro 2 Lite",
-                    "car_class_id": 0
-                }
-            ],
-            "driver_changes": false,
-            "heat_ses_info": {
-                "consolation_delta_max_field_size": 0,
-                "consolation_delta_session_laps": 0,
-                "consolation_delta_session_length_minutes": 0,
-                "consolation_first_session_laps": 0,
-                "consolation_first_session_length_minutes": 0,
-                "consolation_num_position_to_invert": 0,
-                "consolation_num_to_consolation": 0,
-                "consolation_num_to_main": 0,
-                "consolation_run_always": false,
-                "consolation_scores_champ_points": false,
-                "heat_caution_type": 0,
-                "heat_laps": 250,
-                "heat_length_minutes": 15,
-                "heat_num_from_each_to_main": {
-                    "operator": ">",
-                    "value": 60
-                },
-                "heat_num_position_to_invert": 0,
-                "heat_scores_champ_points": true,
-                "heat_session_minutes_estimate": 157,
-                "hidden": false,
-                "main_laps": 250,
-                "main_length_minutes": 60,
-                "main_max_field_size": {
-                    "operator": ">",
-                    "value": 60
-                },
-                "main_num_position_to_invert": 12,
-                "max_entrants": {
-                    "operator": ">",
-                    "value": 60
-                },
-                "open_practice": true,
-                "pre_main_practice_length_minutes": 5,
-                "pre_qual_num_to_main": 0,
-                "pre_qual_practice_length_minutes": 50,
-                "qual_caution_type": 0,
-                "qual_laps": 250,
-                "qual_length_minutes": 20,
-                "qual_num_to_main": 0,
-                "qual_open_delay_seconds": 0,
-                "qual_scores_champ_points": false,
-                "qual_scoring": 0,
-                "qual_style": 2,
-                "race_style": 1
-            },
-            "launch_at": {
-                "cron": "30 20 * * 3",
-                "margin": 15,
-                "timezone": "America/New_York"
-            },
-            "league_id": 8579,
-            "rolling_starts": false,
-            "full_course_cautions": false,
-            "league_season_id": 126035,
-            "lone_qualify": false,
-            "password_protected": false,
-            "team_entry_count": 0,
-            "time_limit": 180,
-            "track_state": {
-                "leave_marbles": true
-            }
-        }
-    },
-    {
-        "name": "Monday",
-        "expectation": {
-            "damage_model": 3,
-            "driver_changes": false,
-            "entry_count": 0,
-            "heat_ses_info": {
-                "consolation_delta_max_field_size": 0,
-                "consolation_delta_session_laps": 0,
-                "consolation_delta_session_length_minutes": 0,
-                "consolation_first_session_laps": 0,
-                "consolation_first_session_length_minutes": 0,
-                "consolation_num_position_to_invert": 0,
-                "consolation_num_to_consolation": 0,
-                "consolation_num_to_main": 0,
-                "consolation_run_always": false,
-                "consolation_scores_champ_points": false,
-                "heat_caution_type": 0,
-                "heat_length_minutes": 15,
-                "heat_num_from_each_to_main": {
-                    "operator": ">",
-                    "value": 60
-                },
-                "heat_num_position_to_invert": 0,
-                "heat_scores_champ_points": true,
-                "heat_session_minutes_estimate": 127,
-                "hidden": false,
-                "main_laps": 250,
-                "main_length_minutes": 15,
-                "main_max_field_size": {
-                    "operator": ">",
-                    "value": 60
-                },
-                "main_num_position_to_invert": 255,
-                "max_entrants": {
-                    "operator": ">",
-                    "value": 60
-                },
-                "open_practice": true,
-                "pre_main_practice_length_minutes": 0,
-                "pre_qual_num_to_main": 0,
-                "pre_qual_practice_length_minutes": 75,
-                "qual_caution_type": 0,
-                "qual_laps": 250,
-                "qual_length_minutes": 15,
-                "qual_num_to_main": 0,
-                "qual_open_delay_seconds": 0,
-                "qual_scores_champ_points": false,
-                "qual_scoring": 0,
-                "qual_style": 2,
-                "race_style": 1
-            },
-            "launch_at": {
-                "cron": "30 20 * * 1",
-                "margin": 15,
-                "timezone": "America/New_York"
-            },
-            "league_id": 8579,
-            "rolling_starts": false,
-            "full_course_cautions": false,
-            "league_season_id": 0,
-            "lone_qualify": false,
-            "password_protected": false,
-            "team_entry_count": 0,
-            "time_limit": 180
-        }
+      ],
+      "driver_changes": false,
+      "heat_ses_info": {
+        "consolation_delta_max_field_size": 0,
+        "consolation_delta_session_laps": 0,
+        "consolation_delta_session_length_minutes": 0,
+        "consolation_first_session_laps": 0,
+        "consolation_first_session_length_minutes": 0,
+        "consolation_num_position_to_invert": 0,
+        "consolation_num_to_consolation": 0,
+        "consolation_num_to_main": 0,
+        "consolation_run_always": false,
+        "consolation_scores_champ_points": false,
+        "heat_caution_type": 0,
+        "heat_laps": 250,
+        "heat_length_minutes": 15,
+        "heat_num_from_each_to_main": {
+          "operator": ">",
+          "value": 60
+        },
+        "heat_num_position_to_invert": 0,
+        "heat_scores_champ_points": true,
+        "heat_session_minutes_estimate": 157,
+        "hidden": false,
+        "main_laps": 250,
+        "main_length_minutes": 60,
+        "main_max_field_size": {
+          "operator": ">",
+          "value": 60
+        },
+        "main_num_position_to_invert": 12,
+        "max_entrants": {
+          "operator": ">",
+          "value": 60
+        },
+        "open_practice": true,
+        "pre_main_practice_length_minutes": 5,
+        "pre_qual_num_to_main": 0,
+        "pre_qual_practice_length_minutes": 50,
+        "qual_caution_type": 0,
+        "qual_laps": 250,
+        "qual_length_minutes": 20,
+        "qual_num_to_main": 0,
+        "qual_open_delay_seconds": 0,
+        "qual_scores_champ_points": false,
+        "qual_scoring": 0,
+        "qual_style": 2,
+        "race_style": 1
+      },
+      "launch_at": {
+        "cron": "30 20 * * 3",
+        "margin": 15,
+        "timezone": "America/New_York"
+      },
+      "league_id": 8579,
+      "rolling_starts": false,
+      "full_course_cautions": false,
+      "league_season_id": 126035,
+      "lone_qualify": false,
+      "password_protected": false,
+      "team_entry_count": 0,
+      "track_state": {
+        "leave_marbles": false
+      }
     }
+  },
+  {
+    "name": "Monday",
+    "expectation": {
+      "damage_model": 3,
+      "cars": [
+        {
+          "car_id": 67,
+          "car_name": "Global Mazda MX-5 Cup"
+        }
+      ],
+      "driver_changes": false,
+      "entry_count": 0,
+      "heat_ses_info": {
+        "consolation_delta_max_field_size": 0,
+        "consolation_delta_session_laps": 0,
+        "consolation_delta_session_length_minutes": 0,
+        "consolation_first_session_laps": 0,
+        "consolation_first_session_length_minutes": 0,
+        "consolation_num_position_to_invert": 0,
+        "consolation_num_to_consolation": 0,
+        "consolation_num_to_main": 0,
+        "consolation_run_always": false,
+        "consolation_scores_champ_points": false,
+        "heat_caution_type": 0,
+        "heat_length_minutes": 15,
+        "heat_num_from_each_to_main": {
+          "operator": ">",
+          "value": 60
+        },
+        "heat_num_position_to_invert": 0,
+        "heat_scores_champ_points": true,
+        "heat_session_minutes_estimate": 127,
+        "hidden": false,
+        "main_laps": 250,
+        "main_length_minutes": 15,
+        "main_max_field_size": {
+          "operator": ">",
+          "value": 60
+        },
+        "main_num_position_to_invert": 255,
+        "max_entrants": {
+          "operator": ">",
+          "value": 60
+        },
+        "open_practice": true,
+        "pre_main_practice_length_minutes": 0,
+        "pre_qual_num_to_main": 0,
+        "pre_qual_practice_length_minutes": 75,
+        "qual_caution_type": 0,
+        "qual_laps": 250,
+        "qual_length_minutes": 15,
+        "qual_num_to_main": 0,
+        "qual_open_delay_seconds": 0,
+        "qual_scores_champ_points": false,
+        "qual_scoring": 0,
+        "qual_style": 2,
+        "race_style": 1
+      },
+      "launch_at": {
+        "cron": "30 20 * * 1",
+        "margin": 15,
+        "timezone": "America/New_York"
+      },
+      "league_id": 8579,
+      "rolling_starts": false,
+      "full_course_cautions": false,
+      "league_season_id": 0,
+      "lone_qualify": false,
+      "password_protected": false,
+      "team_entry_count": 0,
+      "time_limit": 180
+    }
+  }
 ]
