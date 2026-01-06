@@ -247,20 +247,23 @@ class SessionValidator:
                     f"{field_name} is not a dict as expected - got {type(actual_value).__name__} with value: {actual_value}",
                 )
 
-            # Check for direct value comparison first
+            # Collect all failures instead of returning on first one
+            failures = []
+            warnings = []
+            unknowns = []
+
             for key, val in expected_value.items():
                 if key not in actual_value:
-                    return (
-                        FAIL_ICON,
-                        f"{field_name}.{key} missing in actual value - expected: {val}",
+                    failures.append(
+                        f"{field_name}.{key} missing in actual value - expected: {val}"
                     )
+                    continue
 
                 # For primitive types, do direct comparison
                 if not isinstance(val, (dict, list)):
                     if actual_value[key] != val:
-                        return (
-                            FAIL_ICON,
-                            f"{field_name}.{key} has incorrect value: expected {val}, got {actual_value[key]}",
+                        failures.append(
+                            f"{field_name}.{key} has incorrect value: expected {val}, got {actual_value[key]}"
                         )
                 else:
                     # For complex types, recurse
@@ -268,13 +271,26 @@ class SessionValidator:
                         f"{field_name}.{key}", actual_value[key], val
                     )
                     if severity == FAIL_ICON:
-                        # Return failure with path information preserved in desc
-                        return (FAIL_ICON, desc)
+                        failures.append(desc)
                     elif severity == UNKNOWN_ICON:
-                        return (UNKNOWN_ICON, desc)
+                        unknowns.append(desc)
                     elif severity == WARN_ICON:
-                        # If we get a warning from nested comparison, propagate it up
-                        return (WARN_ICON, desc)
+                        warnings.append(desc)
+
+            # Return failures if any exist
+            if failures:
+                combined_failures = "; ".join(failures)
+                return (FAIL_ICON, combined_failures)
+
+            # Return unknowns if any exist
+            if unknowns:
+                combined_unknowns = "; ".join(unknowns)
+                return (UNKNOWN_ICON, combined_unknowns)
+
+            # Return warnings if any exist
+            if warnings:
+                combined_warnings = "; ".join(warnings)
+                return (WARN_ICON, combined_warnings)
 
             return (PASS_ICON, f"{field_name} matches expected dict structure")
         elif isinstance(expected_value, list):
