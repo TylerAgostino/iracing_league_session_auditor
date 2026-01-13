@@ -89,6 +89,7 @@
       "heat_ses_info": {
         "consolation_first_session_length_minutes": 15,
         "consolation_run_always": true,
+        "consolation_num_position_to_invert": 255,
         "heat_caution_type": 0,
         "heat_length_minutes": 15,
         "heat_num_from_each_to_main": 0,
