@@ -18,6 +18,7 @@ services:
       --webhook-url "${WEBHOOK_URL:-""}"
       --keep-alive
       --use-password-flow
+      --interval 900
   auditor-oneoff:
     image: tyleragostino/iracing_auditor:latest
     restart: no
