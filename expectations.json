@@ -5,8 +5,8 @@
       "damage_model": 3,
       "cars": [
         {
-          "car_id": 67,
-          "car_name": "Global Mazda MX-5 Cup"
+          "car_id": 208,
+          "car_name": "Porsche 911 Cup (992.2)"
         }
       ],
       "driver_changes": false,
@@ -30,7 +30,7 @@
         },
         "heat_num_position_to_invert": 0,
         "heat_scores_champ_points": true,
-        "heat_session_minutes_estimate": 157,
+        "heat_session_minutes_estimate": 149,
         "hidden": false,
         "main_laps": 250,
         "main_length_minutes": 60,
@@ -49,7 +49,7 @@
         "pre_qual_practice_length_minutes": 50,
         "qual_caution_type": 0,
         "qual_laps": 250,
-        "qual_length_minutes": 20,
+        "qual_length_minutes": 12,
         "qual_num_to_main": 0,
         "qual_open_delay_seconds": 0,
         "qual_scores_champ_points": false,
@@ -80,8 +80,8 @@
       "damage_model": 3,
       "cars": [
         {
-          "car_id": 67,
-          "car_name": "Global Mazda MX-5 Cup"
+          "car_id": 208,
+          "car_name": "Porsche 911 Cup (992.2)"
         }
       ],
       "driver_changes": false,
