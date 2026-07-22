@@ -20,7 +20,6 @@
         "consolation_num_to_consolation": 0,
         "consolation_num_to_main": 0,
         "consolation_run_always": false,
-        "consolation_scores_champ_points": false,
         "heat_caution_type": 0,
         "heat_laps": 250,
         "heat_length_minutes": 12,
@@ -29,7 +28,6 @@
           "value": 60
         },
         "heat_num_position_to_invert": 0,
-        "heat_scores_champ_points": true,
         "heat_session_minutes_estimate": 146,
         "hidden": false,
         "main_laps": 250,
@@ -52,7 +50,6 @@
         "qual_length_minutes": 12,
         "qual_num_to_main": 0,
         "qual_open_delay_seconds": 0,
-        "qual_scores_champ_points": false,
         "qual_scoring": 0,
         "qual_style": 2,
         "race_style": 1
@@ -65,7 +62,7 @@
       "league_id": 8579,
       "rolling_starts": false,
       "full_course_cautions": false,
-      "league_season_id": 131934,
+      "league_season_id": 134859,
       "lone_qualify": false,
       "password_protected": false,
       "team_entry_count": 0,
@@ -115,7 +112,6 @@
         "qual_length_minutes": 0,
         "qual_num_to_main": 0,
         "qual_open_delay_seconds": 0,
-        "qual_scores_champ_points": false,
         "qual_scoring": 0,
         "qual_style": 0,
         "race_style": 1
