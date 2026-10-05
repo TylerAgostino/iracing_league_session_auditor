@@ -1,12 +1,12 @@
 [
   {
-    "name": "Wednesday",
+    "name": "Audi GTOs",
     "expectation": {
       "damage_model": 3,
       "cars": [
         {
-          "car_id": 163,
-          "car_name": "Ray FF1600"
+          "car_id": 76,
+          "car_name": "Audi 90 GTO"
         }
       ],
       "driver_changes": false,
@@ -62,7 +62,157 @@
       "league_id": 8579,
       "rolling_starts": false,
       "full_course_cautions": false,
-      "league_season_id": 134859,
+      "league_season_id": 137736,
+      "lone_qualify": false,
+      "password_protected": false,
+      "team_entry_count": 0,
+      "track_state": {
+        "leave_marbles": false
+      }
+    }
+  },
+  {
+    "name": "Caterhams",
+    "expectation": {
+      "damage_model": 3,
+      "cars": [
+        {
+          "car_id": 217,
+          "car_name": "Caterham Academy",
+          "car_class_id": 4112
+        },
+        {
+          "car_id": 218,
+          "car_name": "Caterham 420R",
+          "car_class_id": 4113
+        }
+      ],
+      "driver_changes": false,
+      "heat_ses_info": {
+        "consolation_delta_max_field_size": 0,
+        "consolation_delta_session_laps": 0,
+        "consolation_delta_session_length_minutes": 0,
+        "consolation_first_session_laps": 0,
+        "consolation_first_session_length_minutes": 0,
+        "consolation_num_position_to_invert": 0,
+        "consolation_num_to_consolation": 0,
+        "consolation_num_to_main": 0,
+        "consolation_run_always": false,
+        "heat_caution_type": 0,
+        "heat_laps": 250,
+        "heat_length_minutes": 12,
+        "heat_num_from_each_to_main": {
+          "operator": ">",
+          "value": 60
+        },
+        "heat_num_position_to_invert": 0,
+        "heat_session_minutes_estimate": 146,
+        "hidden": false,
+        "main_laps": 250,
+        "main_length_minutes": 50,
+        "main_max_field_size": {
+          "operator": ">",
+          "value": 60
+        },
+        "main_num_position_to_invert": 12,
+        "max_entrants": {
+          "operator": ">",
+          "value": 60
+        },
+        "open_practice": true,
+        "pre_main_practice_length_minutes": 5,
+        "pre_qual_num_to_main": 0,
+        "pre_qual_practice_length_minutes": 60,
+        "qual_caution_type": 0,
+        "qual_laps": 250,
+        "qual_length_minutes": 12,
+        "qual_num_to_main": 0,
+        "qual_open_delay_seconds": 0,
+        "qual_scoring": 0,
+        "qual_style": 2,
+        "race_style": 1
+      },
+      "launch_at": {
+        "cron": "0 20 * * 3",
+        "margin": 15,
+        "timezone": "America/New_York"
+      },
+      "league_id": 8579,
+      "rolling_starts": false,
+      "full_course_cautions": false,
+      "league_season_id": 137736,
+      "lone_qualify": false,
+      "password_protected": false,
+      "team_entry_count": 0,
+      "track_state": {
+        "leave_marbles": false
+      }
+    }
+  },
+  {
+    "name": "Mini Stock",
+    "expectation": {
+      "damage_model": 3,
+      "cars": [
+        {
+          "car_id": 191,
+          "car_name": "Mini Stock"
+        }
+      ],
+      "driver_changes": false,
+      "heat_ses_info": {
+        "consolation_delta_max_field_size": 0,
+        "consolation_delta_session_laps": 0,
+        "consolation_delta_session_length_minutes": 0,
+        "consolation_first_session_laps": 0,
+        "consolation_first_session_length_minutes": 0,
+        "consolation_num_position_to_invert": 0,
+        "consolation_num_to_consolation": 0,
+        "consolation_num_to_main": 0,
+        "consolation_run_always": false,
+        "heat_caution_type": 0,
+        "heat_laps": 250,
+        "heat_length_minutes": 12,
+        "heat_num_from_each_to_main": {
+          "operator": ">",
+          "value": 60
+        },
+        "heat_num_position_to_invert": 0,
+        "heat_session_minutes_estimate": 146,
+        "hidden": false,
+        "main_laps": 250,
+        "main_length_minutes": 50,
+        "main_max_field_size": {
+          "operator": ">",
+          "value": 60
+        },
+        "main_num_position_to_invert": 12,
+        "max_entrants": {
+          "operator": ">",
+          "value": 60
+        },
+        "open_practice": true,
+        "pre_main_practice_length_minutes": 5,
+        "pre_qual_num_to_main": 0,
+        "pre_qual_practice_length_minutes": 60,
+        "qual_caution_type": 0,
+        "qual_laps": 250,
+        "qual_length_minutes": 12,
+        "qual_num_to_main": 0,
+        "qual_open_delay_seconds": 0,
+        "qual_scoring": 0,
+        "qual_style": 2,
+        "race_style": 1
+      },
+      "launch_at": {
+        "cron": "0 20 * * 3",
+        "margin": 15,
+        "timezone": "America/New_York"
+      },
+      "league_id": 8579,
+      "rolling_starts": false,
+      "full_course_cautions": false,
+      "league_season_id": 137736,
       "lone_qualify": false,
       "password_protected": false,
       "team_entry_count": 0,
@@ -75,12 +225,6 @@
     "name": "Monday",
     "expectation": {
       "damage_model": 3,
-      "cars": [
-        {
-          "car_id": 163,
-          "car_name": "Ray FF1600"
-        }
-      ],
       "driver_changes": false,
       "entry_count": 0,
       "heat_ses_info": {
